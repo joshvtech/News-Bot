@@ -14,7 +14,7 @@ def update():
     with urlopen("http://feeds.skynews.com/feeds/rss/world.xml") as session:
         soup_page = BeautifulSoup(session.read(), "xml")
     news_list = soup_page.findAll("item")
-    news_list.sort(key=lambda x: datetime.strptime(x.pubDate.text, "%a, %d %b %Y %H:%M:%S +0100"))
+    news_list.sort(key=lambda x: datetime.strptime(x.pubDate.text[:-6], "%a, %d %b %Y %H:%M:%S"))
     item = news_list[-1]
     article = Story(
         title = item.title.text,
