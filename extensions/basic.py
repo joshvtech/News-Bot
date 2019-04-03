@@ -20,8 +20,7 @@ class basic:
         embed = discord.Embed(
             description = f"""
                 The current prefix is `{botSettings['prefix']}`.
-                You can read the bot documentation here:
-                <{botSettings['docsLink']}>
+                You can read the bot documentation [here]({botSettings['docsLink']}).
             """,
             color = discord.Colour(botSettings["embedColour"])
         )
