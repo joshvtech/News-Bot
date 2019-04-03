@@ -138,7 +138,7 @@ class basic:
     @commands.command()
     async def vote(self, ctx):
         embed = discord.Embed(
-            description = "\n".join(botSettings["votingLinks"]),
+            description = botSettings["voteMessage"],
             color = discord.Colour(botSettings["embedColour"])
         )
         embed.set_author(

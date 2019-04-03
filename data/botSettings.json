@@ -5,14 +5,9 @@
     306771291250229250
   ],
   "embedColour": 14504273,
-  "motd": "Success is a lousy teacher. It seduces people into thinking they can't lose.",
+  "motd": "The greatest mistake a man can make is to be afraid of making one.",
   "inviteLink": "http://tiny.cc/News-Bot-Add",
   "docsLink": "http://tiny.cc/News-Bot-Help",
   "serverLink": "http://tiny.cc/News-Bot-Discord",
-  "votingLinks": [
-    "You can support News-Bot by voting for it on the following links:",
-    "[discordbotlist.com](https://discordbotlist.com/bots/510342065897603073/upvote)",
-    "[discordbots.org](https://discordbots.org/bot/510342065897603073/vote)",
-    "[discord.bots.gg](https://discord.bots.gg/bots/510342065897603073)"
-  ]
+  "voteMessage": "You can support News-Bot by voting for it on these sites:\n[discordbotlist.com](https://discordbotlist.com/bots/510342065897603073/upvote)\n[discordbots.org](https://discordbots.org/bot/510342065897603073/vote)\n[discord.bots.gg](https://discord.bots.gg/bots/510342065897603073)"
 }
