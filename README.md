@@ -6,9 +6,9 @@
 
 > A Discord bot that announces the news, as it happens!
 
-You can invite it to your server with [this link](http://tiny.cc/News-Bot-Invite).
+You can invite it to your server with [this link](http://tiny.cc/News-Bot-Add).
 
-You can also join our server [here](http://tiny.cc/News-Bot-Server).
+You can also join our server [here](http://tiny.cc/News-Bot-Discord).
 
 # Contents
 - [Commands](#commands)
