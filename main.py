@@ -61,12 +61,12 @@ async def on_error(event, *args):
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user.name}#{bot.user.discriminator}. ({bot.user.id})")
-    await bot.change_presence(activity = discord.Game(f"{botSettings['prefix']}help"))
+    await bot.change_presence(activity = discord.Game(f"{bot.command_prefix}help"))
     async with aiohttp.ClientSession() as session:
         async with session.get("http://ipinfo.io/json") as response:
             info = await response.json()
             embed = discord.Embed(
-                description = f"The prefix is `{botSettings['prefix']}`.",
+                description = f"The prefix is `{bot.command_prefix}`.",
                 color = discord.Colour(botSettings["embedColour"])
             )
             embed.set_author(

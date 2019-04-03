@@ -19,7 +19,7 @@ class basic:
     async def help(self, ctx, arg=None):
         embed = discord.Embed(
             description = f"""
-                The current prefix is `{botSettings['prefix']}`.
+                The current prefix is `{self.bot.command_prefix}`.
                 You can read the bot documentation [here]({botSettings['docsLink']}).
             """,
             color = discord.Colour(botSettings["embedColour"])
@@ -89,7 +89,7 @@ class basic:
                 Users: `{len(self.bot.users)}`
                 Uptime: `{libs.uptime.getTime()}`
                 Shard: `{ctx.message.guild.shard_id+1}/{self.bot.shard_count}`
-                Prefix: `{botSettings["prefix"]}`
+                Prefix: `{self.bot.command_prefix}`
                 Creator: `{'{0.name}#{0.discriminator}'.format(self.bot.get_user(botSettings['creator']))}`
             """,
             color = discord.Colour(botSettings["embedColour"])

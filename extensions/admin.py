@@ -33,8 +33,8 @@ class admin:
         embed = discord.Embed(
             description = f"""
                 These are the commands you can use with News-Bot as an admin.
-                You can use `{botSettings['prefix']}adminhelp [command]` to see the usage of a commmand.
-                The current prefix is `{botSettings['prefix']}`.
+                You can use `{self.bot.command_prefix}adminhelp [command]` to see the usage of a commmand.
+                The current prefix is `{self.bot.command_prefix}`.
             """,
             color = discord.Colour(botSettings["embedColour"])
         )
@@ -58,7 +58,7 @@ class admin:
                 for i in results:
                     embed.add_field(
                         name = i["name"],
-                        value = f"{i['description']}\n`{botSettings['prefix']}{i['usage']}`",
+                        value = f"{i['description']}\n`{self.bot.command_prefix}{i['usage']}`",
                         inline = False
                     )
         else:
@@ -75,7 +75,7 @@ class admin:
     @commands.check(isAdmin)
     async def restart(self, ctx):
         embed = discord.Embed(
-            description = f"The admin '{ctx.author.name}#{ctx.author.discriminator}' has restarted the bot.",
+            description = f"The admin `{ctx.author.name}#{ctx.author.discriminator}` has restarted the bot.",
             color = discord.Colour(botSettings["embedColour"])
         )
         embed.set_author(
@@ -143,7 +143,7 @@ class admin:
         if status:
             status = status.lower()
             if status in ["online", "idle", "dnd"]:
-                await self.bot.change_presence(status = discord.Status[status], activity = discord.Game(f"{botSettings['prefix']}help{(f' | {game}' if game else '')}"))
+                await self.bot.change_presence(status = discord.Status[status], activity = discord.Game(f"{self.bot.command_prefix}help{(f' | {game}' if game else '')}"))
                 embed = discord.Embed(
                     description = "Successfully changed bot presence.",
                     color = discord.Colour(botSettings["embedColour"])
@@ -183,7 +183,7 @@ class admin:
             self.bot.unload_extension(arg)
             self.bot.load_extension(arg)
             embed = discord.Embed(
-                description = f"The admin '{ctx.author.name}#{ctx.author.discriminator}' has reloaded `{arg}`.",
+                description = f"The admin `{ctx.author.name}#{ctx.author.discriminator}` has reloaded `{arg}`.",
                 color = discord.Colour(botSettings["embedColour"])
             )
             embed.set_author(
