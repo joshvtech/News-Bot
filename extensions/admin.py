@@ -264,5 +264,26 @@ class admin:
         else:
             await reply(ctx.message, "Please specify the message to send! :warning:")
 
+    @commands.command()
+    @commands.check(isAdmin)
+    async def deleterow(self, ctx, arg=None):
+        if arg:
+            embed = discord.Embed(
+                description = f"Deleted row `{arg}`.",
+                color = discord.Colour(botSettings["embedColour"])
+            )
+            embed.set_author(
+                name = "Delete Row",
+                icon_url = self.bot.user.avatar_url
+            )
+            embed.set_footer(
+                text = "Haha, only bot admins can do this!"
+            )
+            with self.bot.sqlConnection.cursor() as cur:
+                cur.execute(f"DELETE FROM serverList WHERE id = '{arg}';")
+                await ctx.send(embed=embed)
+        else:
+            await reply(ctx.message, "Please specify an ID.")
+
 def setup(bot):
     bot.add_cog(admin(bot))

@@ -33,5 +33,10 @@
     "name": "Announce",
     "description": "Send a message to every subscribed server.",
     "usage": "announce [message]"
+  },
+  {
+    "name": "Deleterow",
+    "description": "Delete a row from PostgreSQL database.",
+    "usage": "deleterow [message]"
   }
 ]
