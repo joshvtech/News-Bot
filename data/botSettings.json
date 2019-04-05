@@ -9,5 +9,6 @@
   "inviteLink": "http://tiny.cc/News-Bot-Add",
   "docsLink": "http://tiny.cc/News-Bot-Help",
   "serverLink": "http://tiny.cc/News-Bot-Discord",
-  "voteMessage": "You can support News-Bot by voting for it on these sites:\n[discordbotlist.com](https://discordbotlist.com/bots/510342065897603073/upvote)\n[discordbots.org](https://discordbots.org/bot/510342065897603073/vote)\n[discord.bots.gg](https://discord.bots.gg/bots/510342065897603073)"
+  "voteLink": "",
+  "trelloLink": "http://tiny.cc/News-Bot-Trello"
 }

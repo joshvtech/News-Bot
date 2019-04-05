@@ -21,6 +21,7 @@ class basic:
             description = f"""
                 The current prefix is `{self.bot.command_prefix}`.
                 You can read the bot documentation [here]({botSettings['docsLink']}).
+                You can view our Trello [here]({botSettings['trelloLink']}) for upcoming updates.
             """,
             color = discord.Colour(botSettings["embedColour"])
         )
@@ -138,7 +139,12 @@ class basic:
     @commands.command()
     async def vote(self, ctx):
         embed = discord.Embed(
-            description = botSettings["voteMessage"],
+            description = """
+                You can support News-Bot by voting for it on these sites:
+                [discordbotlist.com](https://discordbotlist.com/bots/510342065897603073/upvote)
+                [discordbots.org](https://discordbots.org/bot/510342065897603073/vote)
+                [discord.bots.gg](https://discord.bots.gg/bots/510342065897603073)
+            """,
             color = discord.Colour(botSettings["embedColour"])
         )
         embed.set_author(
