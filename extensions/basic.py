@@ -20,8 +20,8 @@ class basic:
         embed = discord.Embed(
             description = f"""
                 The current prefix is `{self.bot.command_prefix}`.
-                You can read the bot documentation [here]({botSettings['docsLink']}).
-                You can view our Trello [here]({botSettings['trelloLink']}) for upcoming updates.
+                You can find a list of commands [here]({botSettings['links']['website']}).
+                You can view our Trello [here]({botSettings['links']['trello']}) for upcoming updates.
             """,
             color = discord.Colour(botSettings["embedColour"])
         )
@@ -68,8 +68,8 @@ class basic:
             description = f"""
                 News-Bot announces news stories as soon as they're published.
                 It can also help moderate your chat.
-                You can invite News-Bot to your server by clicking [this link]({botSettings['inviteLink']}).
-                If you need help with News-Bot, join our server [here]({botSettings['serverLink']}).
+                You can invite News-Bot to your server by clicking [this link]({botSettings['links']['invite']}).
+                If you need help with News-Bot, join our server [here]({botSettings['links']['server']}).
             """,
             color = discord.Colour(botSettings["embedColour"])
         )
@@ -139,12 +139,7 @@ class basic:
     @commands.command()
     async def vote(self, ctx):
         embed = discord.Embed(
-            description = """
-                You can support News-Bot by voting for it on these sites:
-                [discordbotlist.com](https://discordbotlist.com/bots/510342065897603073/upvote)
-                [discordbots.org](https://discordbots.org/bot/510342065897603073/vote)
-                [discord.bots.gg](https://discord.bots.gg/bots/510342065897603073)
-            """,
+            description = f"You can vote for News-Bot [here]({botSettings['links']['vote']}).",
             color = discord.Colour(botSettings["embedColour"])
         )
         embed.set_author(

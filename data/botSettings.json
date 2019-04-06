@@ -6,9 +6,11 @@
   ],
   "embedColour": 14504273,
   "motd": "The greatest mistake a man can make is to be afraid of making one.",
-  "inviteLink": "http://tiny.cc/News-Bot-Add",
-  "docsLink": "http://tiny.cc/News-Bot-Help",
-  "serverLink": "http://tiny.cc/News-Bot-Discord",
-  "voteLink": "",
-  "trelloLink": "http://tiny.cc/News-Bot-Trello"
+  "links": {
+    "website": "http://www.news-bot.tk/",
+    "invite": "http://www.news-bot.tk/redirects/invite.html",
+    "server": "http://www.news-bot.tk/redirects/server.html",
+    "vote": "http://www.news-bot.tk/#vote",
+    "trello": "https://trello.com/b/0ACzWBv6/news-bot"
+  }
 }
