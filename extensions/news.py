@@ -74,7 +74,7 @@ class news:
                                 except:
                                     continue
             firstRun = False
-            await sleep(300)
+            await sleep(60)
 
     @commands.command()
     async def latest(self, ctx):
