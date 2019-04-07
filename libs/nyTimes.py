@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 
 def update(Story):
-    with urlopen("https://rss.nytimes.com/services/xml/rss/nyt/world.xml") as session:
+    with urlopen("https://rss.nytimes.com/services/xml/rss/nyt/World.xml") as session:
         soup_page = BeautifulSoup(session.read(), "xml")
     news_list = soup_page.findAll("item")
     news_list.sort(key=lambda x: datetime.strptime(x.pubDate.text[:-4], "%a, %d %b %Y %H:%M:%S"))
