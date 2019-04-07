@@ -8,7 +8,7 @@ from asyncio import sleep
 from datetime import datetime
 
 #Import custom libraries
-import libs.nyTimes, libs.dailyMirror, libs.bbcNews
+import libs.nyTimes, libs.skyNews, libs.bbcNews
 
 #Define variables
 botSettings = load(open("./data/botSettings.json"))
@@ -60,7 +60,7 @@ class news:
         global firstRun
         await self.bot.wait_until_ready()
         while not self.bot.is_closed():
-            for article in [libs.nyTimes.update(Story), libs.dailyMirror.update(Story), libs.bbcNews.update(Story)]:
+            for article in [libs.nyTimes.update(Story), libs.skyNews.update(Story), libs.bbcNews.update(Story)]:
                 if not article in feed:
                     feed.append(article)
                     if not firstRun:
