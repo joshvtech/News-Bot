@@ -8,7 +8,7 @@ from asyncio import sleep
 from datetime import datetime
 
 #Import custom libraries
-import libs.nyTimes, libs.skyNews, libs.bbcNews
+import sources.bbcNews, sources.cnet, sources.newYorkTimes, sources.skyNews
 
 #Define variables
 botSettings = load(open("./data/botSettings.json"))
@@ -21,7 +21,7 @@ class Story:
         self.outletName = outletName
         self.outletLogo = outletLogo
     def __eq__(self, other):
-        return(self.title == other.title)
+        return(self.link == other.link)
 firstRun = True
 feed = list()
 
@@ -40,7 +40,6 @@ def createNewsEmbed(self, article):
     embed.set_thumbnail(
         url = article.outletLogo
     )
-    embed.timestamp = article.pubDate
     embed.add_field(
         name = article.title,
         value = (article.description if article.description else "No description")
@@ -49,6 +48,7 @@ def createNewsEmbed(self, article):
         name = "Read This Story",
         value = article.link
     )
+    embed.timestamp = article.pubDate
     return(embed)
 
 class news:
@@ -60,7 +60,12 @@ class news:
         global firstRun
         await self.bot.wait_until_ready()
         while not self.bot.is_closed():
-            for article in [libs.nyTimes.update(Story), libs.skyNews.update(Story), libs.bbcNews.update(Story)]:
+            for article in [
+                sources.bbcNews.update(Story),
+                sources.cnet.update(Story),
+                sources.newYorkTimes.update(Story),
+                sources.skyNews.update(Story)
+            ]:
                 if not article in feed:
                     feed.append(article)
                     if not firstRun:
