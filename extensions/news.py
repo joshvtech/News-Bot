@@ -69,7 +69,7 @@ class news:
             firstRun = False
             await sleep(60)
 
-    @commands.command()
+    @commands.command(aliases=["recent"])
     async def latest(self, ctx, *, args=None):
         if args:
             argsFriendly = sourceAlias.check(args.lower())
