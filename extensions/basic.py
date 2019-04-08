@@ -82,7 +82,7 @@ class basic:
         )
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(aliases=["stats"])
     async def botinfo(self, ctx):
         embed = discord.Embed(
             description = f"""
@@ -109,7 +109,7 @@ class basic:
         with self.bot.sqlConnection.cursor() as cur:
             cur.execute(f"SELECT * FROM serverList WHERE id = '{ctx.message.guild.id}';")
             embed = discord.Embed(
-                description = "\n".join([f"{r}: `{v}`" for r, v in zip(["id", "censorship", "censoredMessage", "subChannel"], list(cur.fetchone()))]),
+                description = "\n".join([f"{r}: `{None if v == '' else v}`" for r, v in zip(["id", "censorship", "censoredMessage", "subChannel", "subSources"], list(cur.fetchone()))]),
                 color = discord.Colour(botSettings["embedColour"])
             )
             embed.set_author(

@@ -13,13 +13,14 @@ import sources.bbcNews, sources.cnet, sources.newYorkTimes, sources.skyNews
 #Define variables
 botSettings = load(open("./data/botSettings.json"))
 class Story:
-    def __init__(self, title, description, link, pubDate, outletName, outletLogo):
+    def __init__(self, title, description, link, pubDate, name, shortName, logo):
         self.title = title
         self.description = description
         self.link = link
         self.pubDate = pubDate
-        self.outletName = outletName
-        self.outletLogo = outletLogo
+        self.name = name
+        self.shortName = shortName
+        self.logo = logo
     def __eq__(self, other):
         return(self.link == other.link)
 firstRun = True
@@ -31,14 +32,14 @@ def createNewsEmbed(self, article):
         color = discord.Colour(botSettings["embedColour"])
     )
     embed.set_author(
-        name = article.outletName,
+        name = article.name,
         icon_url = self.bot.user.avatar_url
     )
     embed.set_footer(
-        text = f"News-Bot does not represent nor endorse {article.outletName}."
+        text = f"News-Bot does not represent nor endorse {article.name}."
     )
     embed.set_thumbnail(
-        url = article.outletLogo
+        url = article.logo
     )
     embed.add_field(
         name = article.title,
@@ -75,7 +76,8 @@ class news:
                             for i in cur.fetchall():
                                 channel = self.bot.get_channel(int(i[3]))
                                 try:
-                                    await channel.send(embed=embed)
+                                    if article.shortName in i[4].split(","):
+                                        await channel.send(embed=embed)
                                 except:
                                     continue
             firstRun = False

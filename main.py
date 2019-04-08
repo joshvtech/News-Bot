@@ -105,7 +105,7 @@ async def on_message(message):
                 else:
                     await bot.process_commands(message)
             else:
-                cur.execute("INSERT INTO serverList VALUES (%s, %s, %s, %s, %s);", (str(message.channel.guild.id), False, "Please keep it clean! :underage:", "0", ""))
+                cur.execute("INSERT INTO serverList VALUES (%s, %s, %s, %s, %s);", (str(message.channel.guild.id), False, "Please keep it clean! :underage:", "0", " "))
 
 #----------Connect to Database----------#
 

@@ -13,7 +13,8 @@ def update(Story):
         description = item.description.text,
         link = item.link.text,
         pubDate = datetime.strptime(item.pubDate.text[:-6], "%a, %d %b %Y %H:%M:%S"),
-        outletName = "CNET",
-        outletLogo = "https://i1.feedspot.com/3708244.jpg"
+        name = "CNET",
+        shortName = "cnet",
+        logo = "https://i1.feedspot.com/3708244.jpg"
     )
     return(article)
