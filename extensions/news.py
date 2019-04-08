@@ -8,22 +8,10 @@ from asyncio import sleep
 from datetime import datetime
 
 #Import custom libraries
-import sources.bbcNews, sources.cnet, sources.newYorkTimes, sources.skyNews, sources.theTelegraph
-import libs.sourceAlias
+from libs import sources, sourceAlias
 
 #Define variables
 botSettings = load(open("./data/botSettings.json"))
-class Story:
-    def __init__(self, title, description, link, pubDate, name, shortName, logo):
-        self.title = title
-        self.description = description
-        self.link = link
-        self.pubDate = pubDate
-        self.name = name
-        self.shortName = shortName
-        self.logo = logo
-    def __eq__(self, other):
-        return(self.link == other.link)
 firstRun = True
 feed = list()
 
@@ -64,13 +52,7 @@ class news:
         global firstRun
         await self.bot.wait_until_ready()
         while not self.bot.is_closed():
-            for article in [
-                sources.bbcNews.update(Story),
-                sources.cnet.update(Story),
-                sources.newYorkTimes.update(Story),
-                sources.skyNews.update(Story),
-                sources.theTelegraph.update(Story)
-            ]:
+            for article in sources.updateAll():
                 if not article in feed:
                     feed.append(article)
                     if not firstRun:
@@ -90,7 +72,7 @@ class news:
     @commands.command()
     async def latest(self, ctx, *, args=None):
         if args:
-            argsFriendly = libs.sourceAlias.check(args.lower())
+            argsFriendly = sourceAlias.check(args.lower())
             if argsFriendly:
                 await ctx.send(embed = createNewsEmbed(self, [i for i in feed if i.shortName == argsFriendly][-1]))
             else:
