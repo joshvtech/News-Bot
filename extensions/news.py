@@ -8,7 +8,7 @@ from asyncio import sleep
 from datetime import datetime
 
 #Import custom libraries
-import sources.bbcNews, sources.cnet, sources.newYorkTimes, sources.skyNews
+import sources.bbcNews, sources.cnet, sources.newYorkTimes, sources.skyNews, sources.theTelegraph
 
 #Define variables
 botSettings = load(open("./data/botSettings.json"))
@@ -65,7 +65,8 @@ class news:
                 sources.bbcNews.update(Story),
                 sources.cnet.update(Story),
                 sources.newYorkTimes.update(Story),
-                sources.skyNews.update(Story)
+                sources.skyNews.update(Story),
+                sources.theTelegraph.update(Story)
             ]:
                 if not article in feed:
                     feed.append(article)

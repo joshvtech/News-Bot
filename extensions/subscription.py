@@ -32,7 +32,7 @@ class subscription:
                         sources.append(argsFriendly)
                         sources = ",".join(sources)
                         cur.execute(f"UPDATE serverList SET subSources = '{sources}' WHERE id = '{ctx.guild.id}';")
-                        await reply(ctx.message, "Successfully subscribed! :bell:")
+                        await reply(ctx.message, f"Successfully subscribed to `{argsFriendly}`! :bell:")
             else:
                 await reply(ctx.message, "Please specify a supported source! :warning:")
         else:
@@ -51,7 +51,7 @@ class subscription:
                         sources.remove(argsFriendly)
                         sources = ",".join(sources)
                         cur.execute(f"UPDATE serverList SET subSources = '{sources}' WHERE id = '{ctx.guild.id}';")
-                        await reply(ctx.message, "Successfully unsubscribed! :no_bell:")
+                        await reply(ctx.message, f"Successfully unsubscribed from `{argsFriendly}`! :no_bell:")
                     else:
                         await reply(ctx.message, "You're not subscribed to that source! :no_bell:")
             else:
