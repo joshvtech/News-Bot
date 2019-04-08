@@ -9,6 +9,7 @@ from datetime import datetime
 
 #Import custom libraries
 import sources.bbcNews, sources.cnet, sources.newYorkTimes, sources.skyNews, sources.theTelegraph
+import libs.sourceAlias
 
 #Define variables
 botSettings = load(open("./data/botSettings.json"))
@@ -27,6 +28,8 @@ firstRun = True
 feed = list()
 
 #Define functions
+async def reply(message, string):
+    await message.channel.send(f"{message.author.mention}, {string}")
 def createNewsEmbed(self, article):
     embed = discord.Embed(
         color = discord.Colour(botSettings["embedColour"])
@@ -85,8 +88,15 @@ class news:
             await sleep(60)
 
     @commands.command()
-    async def latest(self, ctx):
-        await ctx.send(embed = createNewsEmbed(self, feed[-1]))
+    async def latest(self, ctx, *, args=None):
+        if args:
+            argsFriendly = libs.sourceAlias.check(args.lower())
+            if argsFriendly:
+                await ctx.send(embed = createNewsEmbed(self, [i for i in feed if i.shortName == argsFriendly][-1]))
+            else:
+                await reply(ctx.message, "Please specify a supported source! :warning:")
+        else:
+            await reply(ctx.message, "Please specify what source you'd like to see! :warning:")
 
 def setup(bot):
     bot.add_cog(news(bot))
