@@ -1,0 +1,45 @@
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+.back-to-top {
+  text-align: right;
+}
+body {
+  font-family: Tahoma;
+  padding: 0 20%;
+}
+button {
+  background-color: transparent;
+  border: 2px solid;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: inherit;
+  padding: 10px 20px;
+}
+button:hover {
+  background-color: black;
+  border: 2px solid black;
+  color: white;
+}
+code {
+  border: 2px solid LightGray;
+  border-radius: 5px;
+  padding: 2px 5px;
+}
+hr {
+  border: 0;
+  border-top: 1px solid;
+}
+th {
+  text-align: inherit;
+}
+th, td {
+    padding: 5px 20px;
+}
+ul {
+  padding-bottom: 5px;
+}

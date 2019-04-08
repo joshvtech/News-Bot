@@ -1,0 +1,11 @@
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+body {
+  font-family: Tahoma;
+  text-align: center;
+}

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="style.css" rel="stylesheet" type="text/css"/>
+    <link rel="shortcut icon" href="/favicon.png" type="image/x-icon"/>
+    <link rel="apple-touch-icon" href="/favicon.png" type="image/x-icon"/>
+    <title>Home | News-Bot</title>
+  </head>
+  <body>
+    <div id="top" align="center">
+      <img src="https://cdn.discordapp.com/avatars/510342065897603073/9258238a83588de718c48e59ec7a6924.png?size=256" alt="News-Bot"/>
+    </div>
+    <br/>
+    <div align="center">
+      <a href="redirects/invite.html" target="_blank"><button>Invite</button></a>
+      <a href="redirects/server.html" target="_blank"><button>Server</button></a>
+      <a href="#vote"><button>Vote</button></a>
+      <h1>News-Bot</h1>
+      <p>A Discord bot that announces the news, as it happens!</p>
+    </div>
+    <hr/>
+    <h1>Contents</h1>
+    <ul>
+      <li><a href="#rules">Rules</a></li>
+      <li><a href="#vote">Vote</a></li>
+      <li><a href="#sources">Sources</a></li>
+      <li><a href="#commands">Commands</a></li>
+      <ul>
+        <li><a href="#basic">Basic</a></li>
+        <li><a href="#censorship">Censorship</a></li>
+        <li><a href="#news">News</a></li>
+        <li><a href="#subscription">Subscription</a></li>
+      </ul>
+      <li><a href="#applications">Applications/Forms</a></li>
+      <li><a href="#copyright-notice">Copyright Notice</a></li>
+    </ul>
+    <hr/>
+    <div id="rules">
+      <h1>Rules</h1>
+      <h3>By using News-Bot, you agree abide by these rules.</h3>
+      <h5>Disobeying these rules will result in your server being blacklisted.</h5>
+      <p>
+        Do <b>not</b> use the bot for racism, homophobia or any other offensive purpose.<br/>
+        Do <b>not</b> use macros, or spam the bot<br/>
+        <b>Never</b> share any bugs, please tell a developer in <a href="redirects/server.html" target="_blank">our server</a>.<br/>
+        <b>Don't</b> try to host News-Bot yourself. Read more about this <a href="#cloning">here</a>.<br/>
+      </p>
+      <div class="back-to-top">
+        <a href="#top">Back to top</a>
+      </div>
+    </div>
+    <hr/>
+    <div id="vote">
+      <h1>Vote</h1>
+      <h3>By voting for News-Bot on bot sites, you're helping News-Bot to grow! Thank you.</h3>
+      <ul>
+        <li><a href="https://discordbotlist.com/bots/510342065897603073/upvote" target="_blank">discordbotlist.com</a></li>
+        <li><a href="https://discordbots.org/bot/510342065897603073/vote" target="_blank">discordbots.org</a></li>
+        <li><a href="https://discord.bots.gg/bots/510342065897603073" target="_blank">discord.bots.gg</a></li>
+        <li><a href="https://botsfordiscord.com/bot/510342065897603073/vote" target="_blank">botsfordiscord.com</a></li>
+        <li><a href="https://bots.ondiscord.xyz/bots/510342065897603073" target="_blank">bots.ondiscord.xyz</a></li>
+      </ul>
+      <div class="back-to-top">
+        <a href="#top">Back to top</a>
+      </div>
+    </div>
+    <hr/>
+    <div id="sources">
+      <h1>Sources</h1>
+      <h3>These are the news sources that you can currently subscribe to with News-Bot.</h3>
+      <table>
+        <tr>
+          <th>Source</th>
+          <th>Aliases</th>
+          <th>RSS Link</th>
+        </tr>
+        <tr>
+          <td><code>BBC News</code></td>
+          <td><code>bbcnews</code>, <code>bbc</code></td>
+          <td>http://feeds.bbci.co.uk/news/world/rss.xml</td>
+        </tr>
+        <tr>
+          <td><code>CNET</code></td>
+          <td><code>cnet</code></td>
+          <td>https://www.cnet.com/rss/gaming/</td>
+        </tr>
+        <tr>
+          <td><code>New York Times</code></td>
+          <td><code>newyorktimes</code>, <code>nytimes</code>, <code>nyt</code></td>
+          <td>https://rss.nytimes.com/services/xml/rss/nyt/World.xml</td>
+        </tr>
+        <tr>
+          <td><code>Sky News</code></td>
+          <td><code>skynews</code>, <code>sky</code></td>
+          <td>http://feeds.skynews.com/feeds/rss/world.xml</td>
+        </tr>
+        <tr>
+          <td><code>The Telegraph</code></td>
+          <td><code>thetelegraph</code>, <code>telegraph</code></td>
+          <td>http://feeds.skynews.com/feeds/rss/world.xml</td>
+        </tr>
+      </table>
+      <div class="back-to-top">
+        <a href="#top">Back to top</a>
+      </div>
+    </div>
+    <hr/>
+    <div id="commands">
+      <h1>Commands</h1>
+      <h3>Below you can find a full list of commands.</h3>
+      <h5>Please note that you cannot use commands in direct messages.</h5>
+      <ul>
+        <li>What is a command?</li>
+        <ul>
+          <li>It's a specific function of the bot that can be used with the prefix <code>nb/</code>.</li>
+        </ul>
+        <li>What is an alias?</li>
+        <ul>
+          <li>It's another way to use the command.</li>
+        </ul>
+        <li>What are the asterisks for?</li>
+        <ul>
+          <li>An asterisk shows that an argument is required.</li>
+        </ul>
+        <li>Why can't I use developer commands?</li>
+        <ul>
+          <li>Simply because they offer too much power for an average user.</li>
+        </ul>
+        <li id="cloning">Should I create a clone of News-Bot?</li>
+        <ul>
+          <li>
+            I don't suggest cloning the <a href="redirects/github.html" target="_blank">GitHub repo</a> at all, as this will get you blacklisted.<br/>
+            You'd also be wasting your time and money to host the bot yourself.<br/>
+            Though if you find that News-Bot will help you to get into programming, contact me and I'd be happy to help you.<br/>
+            You should also read the <a href="">Copyright Notice</a>.
+          </li>
+        </ul>
+        <li>What library does News-Bot use?</li>
+        <ul>
+          <li>Believe it or not, it uses <a href="https://github.com/Rapptz/discord.py" target="_blank">discord.py</a>.</li>
+        </ul>
+        <li>How do you host your bot?</li>
+        <ul>
+          <li>
+            <a href="https://www.heroku.com/" target="_blank">Secret methods</a>.<br/>
+          </li>
+        </ul>
+      </ul>
+      <div class="back-to-top">
+        <a href="#top">Back to top</a>
+      </div>
+    </div>
+    <hr/>
+    <div id="basic">
+      <h2>Basic</h2>
+      <h3>These are basic commands that you should expect with most bots.</h3>
+      <table>
+        <tr>
+          <th>Command</th>
+          <th>Alias</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td><code>Help</code></td>
+          <td>None</td>
+          <td>Displays a help message.</td>
+        </tr>
+        <tr>
+          <td><code>Ping</code></td>
+          <td>None</td>
+          <td>Calculate the bot's ping in milliseconds.</td>
+        </tr>
+        <tr>
+          <td><code>Invite</code></td>
+          <td>None</td>
+          <td>Get the bot's invite link.</td>
+        </tr>
+        <tr>
+          <td><code>Botinfo</code></td>
+          <td><code>stats</code></td>
+          <td>Display information about the bot.</td>
+        </tr>
+        <tr>
+          <td><code>Serverinfo</code></td>
+          <td>None</td>
+          <td>Display the current server's settings.</td>
+        </tr>
+        <tr>
+          <td><code>Motd</code></td>
+          <td>None</td>
+          <td>	Display the Message of The Day.</td>
+        </tr>
+        <tr>
+          <td><code>Vote</code></td>
+          <td>None</td>
+          <td>Display the bot's voting links.</td>
+        </tr>
+      </table>
+      <div class="back-to-top">
+        <a href="#top">Back to top</a>
+      </div>
+    </div>
+    <hr/>
+    <div id="censorship">
+      <h2>Censorship</h2>
+      <h3>Censorship is self explanatory, it deletes messages containing <i>bad</i> words.</h3>
+      <table>
+        <tr>
+          <th>Command</th>
+          <th>Alias</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td><code>Enablecensoring [*true/false]</code></td>
+          <td><code>enablecensorship</code></td>
+          <td>Turn on or off censorship for the server.</td>
+        </tr>
+        <tr>
+          <td><code>Setcensormessage [*message]</code></td>
+          <td><code>censormessage</code></td>
+          <td>Change the censorship message.</td>
+        </tr>
+      </table>
+      <div class="back-to-top">
+        <a href="#top">Back to top</a>
+      </div>
+    </div>
+    <hr/>
+    <div id="news">
+      <h2>News</h2>
+      <h3>There's only one news command right now, but more will come soon.</h3>
+      <table>
+        <tr>
+          <th>Command</th>
+          <th>Alias</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td><code>Latest</code></td>
+          <td>None</td>
+          <td>Display the latest news story.</td>
+        </tr>
+      </table>
+      <div class="back-to-top">
+        <a href="#top">Back to top</a>
+      </div>
+    </div>
+    <hr/>
+    <div id="subscription">
+      <h2>Subscription</h2>
+      <h3>Subscription will automatically send news stories to the selected channel.</h3>
+      <h5>The source argument should be a source found from <a href="#sources">here</a>. Example: <code>nb/subscribe bbc</code></h5>
+      <table>
+        <tr>
+          <th>Command</th>
+          <th>Alias</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td><code>Subscribe [*source]</code></td>
+          <td><code>sub</code></td>
+          <td>Subscribe to a news source.</td>
+        </tr>
+        <tr>
+          <td><code>Unsubscribe [*source]</code></td>
+          <td><code>unsub</code></td>
+          <td>Unsubscribe from a news source.</td>
+        </tr>
+        <tr>
+          <td><code>Setnewschannel</code></td>
+          <td>None</td>
+          <td>Change the news feed channel.</td>
+        </tr>
+      </table>
+      <div class="back-to-top">
+        <a href="#top">Back to top</a>
+      </div>
+    </div>
+    <hr/>
+    <div id="applications">
+      <h1>Applications/Forms</h1>
+      <h3>If you have difficulty submitting a form you can <a href="redirects/server.html" target="_blank">join our server</a> and talk to an administrator.</h3>
+      <ul>
+        <li><a href="https://forms.gle/KgvZhUoi6ePapk596" target="_blank">Bug Report Form</a></li>
+        <li><a href="https://forms.gle/J1q9bJG1X1Y4NVK27" target="_blank">Staff Application</a></li>
+        <li><a href="https://forms.gle/he13UasW62jiUM4d6" target="_blank">Suggestion Form</a></li>
+      </ul>
+      <div class="back-to-top">
+        <a href="#top">Back to top</a>
+      </div>
+    </div>
+    <hr/>
+    <div id="copyright-notice">
+      <h1>Copyright Notice</h1>
+      <h3>An important notice you should read if you plan on copying/cloning this bot.</h3>
+      <p>
+        Please note that the News-Bot repository does not have a license, this means that you have no permission to use, modify, or share this software.<br/>
+        You can read more about this <a href="https://choosealicense.com/no-permission/" target="_blank">here</a>.<br/>
+        This is also stated in the GitHub terms and conditions, <a href="https://help.github.com/articles/github-terms-of-service/#3-ownership-of-content-right-to-post-and-license-grants" target="_blank">here</a>.<br/>
+        In other words, my work is protected under copyright laws and you shouldn't use it in your own projects without my signed permission.
+      </p>
+      <div class="back-to-top">
+        <a href="#top">Back to top</a>
+      </div>
+    </div>
+    <hr/>
+    <h3 align="center">Copyright © News-Bot 2019</h3>
+  </body>
+</html>
