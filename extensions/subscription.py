@@ -27,8 +27,6 @@ class subscription:
                     else:
                         if "" in sources:
                             sources.remove("")
-                        elif "Empty" in sources:
-                            sources.remove("Empty")
                         sources.append(argsFriendly)
                         sources = ",".join(sources)
                         cur.execute(f"UPDATE serverList SET subSources = '{sources}' WHERE id = '{ctx.guild.id}';")

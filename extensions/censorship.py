@@ -21,7 +21,7 @@ class censorship:
 
     async def on_guild_join(self, guild):
         with self.bot.sqlConnection.cursor() as cur:
-            cur.execute("INSERT INTO serverList VALUES (%s, %s, %s, %s);", (str(guild.id), False, "Please keep it clean! :underage:", "0"))
+            cur.execute("INSERT INTO serverList VALUES (%s, %s, %s, %s, %s);", (str(guild.id), False, "Please keep it clean! :underage:", "0", ""))
 
     async def on_guild_remove(self, guild):
         with self.bot.sqlConnection.cursor() as cur:
