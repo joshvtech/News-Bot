@@ -9,5 +9,7 @@ def check(args):
         return("skyNews")
     elif args in ["the telegraph", "thetelegraph","telegraph"]:
         return("theTelegraph")
+    elif args == "wired":
+        return("wired")
     else:
         return(None)

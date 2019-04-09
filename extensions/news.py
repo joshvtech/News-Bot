@@ -34,7 +34,7 @@ def createNewsEmbed(self, article):
     )
     embed.add_field(
         name = article.title,
-        value = (article.description if article.description else "No description")
+        value = article.description
     )
     embed.add_field(
         name = "Read This Story",
