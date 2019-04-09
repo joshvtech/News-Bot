@@ -57,9 +57,9 @@ class subscription:
         else:
             await reply(ctx.message, "Please specify what source like to unsubscribe from! :warning:")
 
-    @commands.command()
+    @commands.command(aliases=["setchannel"])
     @commands.has_permissions(administrator=True)
-    async def setchannel(self, ctx):
+    async def setnewschannel(self, ctx):
         with self.bot.sqlConnection.cursor() as cur:
             cur.execute(f"UPDATE serverList SET subChannel = '{ctx.channel.id}' WHERE id = '{ctx.guild.id}';")
             await reply(ctx.message, f"Successfully changed subscription channel to `{ctx.channel.name}`! :bell:")
