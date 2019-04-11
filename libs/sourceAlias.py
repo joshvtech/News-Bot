@@ -11,5 +11,7 @@ def check(args):
         return("theTelegraph")
     elif args == "wired":
         return("wired")
+    elif args in ["cbs news", "cbsnews", "cbs"]:
+        return("cbsNews")
     else:
         return(None)
