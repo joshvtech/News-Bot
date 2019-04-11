@@ -40,5 +40,4 @@ def updateAll():
         update("https://www.telegraph.co.uk/news/rss.xml",               -4, "The Telegraph",  "theTelegraph", "https://i3.feedspot.com/4880356.jpg"), #The Telegraph
         update("https://www.wired.com/feed/rss",                         -6, "WIRED",          "wired",        "https://i1.feedspot.com/4724360.jpg"), #WIRED
         update("https://www.cbsnews.com/latest/rss/main",                -6, "CBS News",       "cbsNews",      "https://i3.feedspot.com/4873151.jpg") #CBS News
-        #update("http://feeds.ign.com/ign/games-all",                     -4, "IGN",            "ign",          "https://i1.feedspot.com/1180874.jpg")  #IGN
     ])

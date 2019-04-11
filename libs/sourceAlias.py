@@ -13,7 +13,5 @@ def check(args):
         return("wired")
     elif args in ["cbs news", "cbsnews", "cbs"]:
         return("cbsNews")
-    elif args == "ign":
-        return("ign")
     else:
         return(None)
