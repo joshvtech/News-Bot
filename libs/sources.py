@@ -18,8 +18,7 @@ def update(link, timeCorrection, name, shortName, logo):
     with urlopen(link) as session:
         soup_page = BeautifulSoup(session.read(), "xml")
     news_list = soup_page.findAll("item")
-    for i in [i for i in news_list if not i.pubDate]:
-        news_list.remove(i)
+    news_list = [i for i in news_list if i.pubDate]
     news_list.sort(key=lambda x: datetime.strptime(x.pubDate.text[:timeCorrection], "%a, %d %b %Y %H:%M:%S"))
     item = news_list[-1]
     article = Story(
