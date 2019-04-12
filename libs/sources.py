@@ -18,6 +18,8 @@ def update(link, timeCorrection, name, shortName, logo):
     with urlopen(link) as session:
         soup_page = BeautifulSoup(session.read(), "xml")
     news_list = soup_page.findAll("item")
+    for i in [i for i in news_list if not i.pubDate]:
+        news_list.remove(i)
     news_list.sort(key=lambda x: datetime.strptime(x.pubDate.text[:timeCorrection], "%a, %d %b %Y %H:%M:%S"))
     item = news_list[-1]
     article = Story(
@@ -39,5 +41,8 @@ def updateAll():
         update("http://feeds.skynews.com/feeds/rss/world.xml",           -6, "Sky News",       "skyNews",      "https://i3.feedspot.com/4280451.jpg"), #Sky News
         update("https://www.telegraph.co.uk/news/rss.xml",               -4, "The Telegraph",  "theTelegraph", "https://i3.feedspot.com/4880356.jpg"), #The Telegraph
         update("https://www.wired.com/feed/rss",                         -6, "WIRED",          "wired",        "https://i1.feedspot.com/4724360.jpg"), #WIRED
-        update("https://www.cbsnews.com/latest/rss/main",                -6, "CBS News",       "cbsNews",      "https://i3.feedspot.com/4873151.jpg") #CBS News
+        update("https://www.cbsnews.com/latest/rss/main",                -6, "CBS News",       "cbsNews",      "https://i3.feedspot.com/4873151.jpg"), #CBS News
+        update("http://rss.cnn.com/rss/edition_world.rss",               -4, "CNN",            "cnn",          "https://i3.feedspot.com/3298.jpg"),    #CNN
+        update("https://www.space.com/feeds/all",                        -6, "Space.com",      "spaceCom",     "https://i2.feedspot.com/4707531.jpg"), #Space.com
+        update("http://feeds.ign.com/ign/games-all",                     -4, "IGN",            "ign",          "https://i1.feedspot.com/1180874.jpg")  #IGN
     ])

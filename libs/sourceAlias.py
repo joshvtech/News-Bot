@@ -13,5 +13,11 @@ def check(args):
         return("wired")
     elif args in ["cbs news", "cbsnews", "cbs"]:
         return("cbsNews")
+    elif args == "cnn":
+        return("cnn")
+    elif args in ["space.com", "spacecom", "space com", "space"]:
+        return("spaceCom")
+    elif args == "ign":
+        return("ign")
     else:
         return(None)
