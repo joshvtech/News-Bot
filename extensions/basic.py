@@ -62,14 +62,14 @@ class basic(commands.Cog):
         embed.add_field(
             name="Stats",
             value=f"""
-                :robot: Prefix: `{self.bot._prefix}`
-                <:servers:568801413124194347> Servers: `{len(self.bot.guilds)}`
-                :busts_in_silhouette: Users: `{len(self.bot.users)}`
-                :stopwatch: Uptime: `{self.bot._get_uptime()}`
-                :ping_pong: Latency: `{round(self.bot.latency*1000)}ms`
-                :gem: Shard ID: `{ctx.guild.shard_id}`
-                :open_file_folder: Messages Processed: `{self.bot._message_count}`
-                :open_file_folder: Commands Processed: `{self.bot._command_count}`"""
+                Prefix: `{self.bot._prefix}`
+                Servers: `{len(self.bot.guilds)}`
+                Users: `{len(self.bot.users)}`
+                Uptime: `{self.bot._get_uptime()}`
+                Latency: `{round(self.bot.latency*1000)}ms`
+                Shard ID: `{ctx.guild.shard_id}`
+                Messages Processed: `{self.bot._message_count}`
+                Commands Processed: `{self.bot._command_count}`"""
         )
         msg = await ctx.send(embed=embed)
         if ctx.author.id in self.bot._settings["admins"]:
@@ -77,8 +77,8 @@ class basic(commands.Cog):
             embed.add_field(
                 name="Advanced",
                 value=f"""
-                    <:python:568799857721081872> Python Version: `{python_version()}`
-                    <:discord:568799938008580096> discord.py Version: `{discord.__version__}`
+                    Python Version: `{python_version()}`
+                    discord.py Version: `{discord.__version__}`
                     CPU Usage: `{cpu_percent(interval=1)}%`
                     RAM Usage: `{round(memory.used/1024**3, 1)}GB` of `{round(memory.total/1024**3, 1)}GB` (`{memory.percent}%`)"""
             )

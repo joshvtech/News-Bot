@@ -19,5 +19,7 @@ def check(args):
         return("spaceCom")
     elif args == "ign":
         return("ign")
+    elif args in ["hollywood life", "hollywoodlife", "hollywood", "hl"]:
+        return("hollywoodLife")
     else:
         return(None)
