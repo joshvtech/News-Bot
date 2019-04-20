@@ -1,52 +1,41 @@
-#Import standard libraries
+## NOTE: Import Standard Libraries
 import discord
 from discord.ext import commands
 
-#Import required libraries
-from json import load
+## NOTE: Import Required Libraries
 from asyncio import sleep
-from datetime import datetime
 
-#Import custom libraries
+## NOTE: Import Custom Libraries
 from libs import sources, sourceAlias
 
-#Define variables
-botSettings = load(open("./data/botSettings.json"))
+## NOTE: Define Variables
 firstRun = True
 feed = list()
 
-#Define functions
-async def reply(message, string):
-    await message.channel.send(f"{message.author.mention}, {string}")
-def createNewsEmbed(self, article):
-    embed = discord.Embed(
-        color = discord.Colour(botSettings["embedColour"])
-    )
-    embed.set_author(
-        name = article.name,
-        icon_url = self.bot.user.avatar_url
-    )
-    embed.set_footer(
-        text = f"News-Bot does not represent nor endorse {article.name}."
-    )
-    embed.set_thumbnail(
-        url = article.logo
-    )
-    embed.add_field(
-        name = article.title,
-        value = article.description
-    )
-    embed.add_field(
-        name = "Read This Story",
-        value = article.link
-    )
-    embed.timestamp = article.pubDate
-    return(embed)
+## NOTE: Define Functions
 
-class news:
+## NOTE: Define Cog
+
+class news(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.bg_task = self.bot.loop.create_task(self.update())
+
+    def createNewsEmbed(self, article):
+        embed = self.bot._create_embed(title=article.name, footer=f"News-Bot does not represent nor endorse {article.name}.")
+        embed.set_thumbnail(
+            url = article.logo
+        )
+        embed.add_field(
+            name = article.title,
+            value = article.description
+        )
+        embed.add_field(
+            name = "Read This Story",
+            value = article.link
+        )
+        embed.timestamp = article.pubDate
+        return(embed)
 
     async def update(self):
         global firstRun
@@ -56,7 +45,7 @@ class news:
                 if not article in feed:
                     feed.append(article)
                     if not firstRun:
-                        embed = createNewsEmbed(self, article)
+                        embed = self.createNewsEmbed(article)
                         with self.bot.sqlConnection.cursor() as cur:
                             cur.execute("SELECT * FROM serverList")
                             for i in cur.fetchall():
@@ -74,11 +63,11 @@ class news:
         if args:
             argsFriendly = sourceAlias.check(args.lower())
             if argsFriendly:
-                await ctx.send(embed = createNewsEmbed(self, [i for i in feed if i.shortName == argsFriendly][-1]))
+                await ctx.send(embed=self.createNewsEmbed([i for i in feed if i.shortName == argsFriendly][-1]))
             else:
-                await reply(ctx.message, "Please specify a supported source! :warning:")
+                await self.bot._reply(ctx, "Please specify a supported source! :warning:")
         else:
-            await reply(ctx.message, "Please specify what source you'd like to see! :warning:")
+            await self.bot._reply(ctx, "Please specify what source you'd like to see! :warning:")
 
 def setup(bot):
     bot.add_cog(news(bot))

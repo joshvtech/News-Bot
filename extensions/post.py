@@ -7,7 +7,7 @@ import dbl
 from asyncio import sleep
 from os import environ
 
-class post:
+class post(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         #discordbots.org

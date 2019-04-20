@@ -1,257 +1,112 @@
-#Import standard libraries
+## NOTE: Import Standard Libraries
 import discord
 from discord.ext import commands
 
-#Import required libraries
-from json import load
-from cpuinfo import get_cpu_info
-from psutil import cpu_percent, virtual_memory
-from platform import python_version, platform
+## NOTE: Import Required Libraries
 from inspect import isawaitable
 
-#Import custom libraries
-import libs.uptime
+## NOTE: Import Custom Libraries
 
-#Define variables
-adminCommands = load(open("./data/adminCommands.json"))
-botSettings = load(open("./data/botSettings.json"))
-cpuinfo = get_cpu_info()
+## NOTE: Define Variables
 
-#Define functions
-def isAdmin(ctx):
-    return(ctx.author.id in botSettings["admins"])
-async def reply(message, string):
-    await message.channel.send(f"{message.author.mention}, {string}")
+## NOTE: Define Functions
 
-class admin:
+## NOTE: Define Cog
+class admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
-    @commands.check(isAdmin)
+    def cog_check(self, ctx):
+        return(ctx.author.id in self.bot._settings["admins"])
+
+    @commands.command(help="Displays this help message.", usage="adminhelp [command]")
     async def adminhelp(self, ctx, arg=None):
-        embed = discord.Embed(
-            description = f"""
+        embed = self.bot._create_embed(
+            ctx=ctx,
+            description=f"""
                 These are the commands you can use with News-Bot as an admin.
-                You can use `{self.bot.command_prefix}adminhelp [command]` to see the usage of a commmand.
-                The current prefix is `{self.bot.command_prefix}`.
-            """,
-            color = discord.Colour(botSettings["embedColour"])
-        )
-        embed.set_author(
-            name = "Admin Help",
-            icon_url = self.bot.user.avatar_url
-        )
-        embed.set_footer(
-            text = "Please note that you cannot use commands in DM's!"
+                You can use `{self.bot._prefix}{ctx.command.usage}` to see the usage of a commmand.
+                The current prefix is `{self.bot._prefix}`.""",
+            footer="Please note that you cannot use commands in DM's!"
         )
         if arg:
             arg = arg.lower()
-            results = list()
-            for i in adminCommands:
-                if i["name"].lower().startswith(arg):
-                    results.append(i)
-            if results == list():
-                await reply(ctx.message, "I couldn't find any commands! :warning:")
-                return
-            else:
+            results = [i for i in self.get_commands() if i.name.startswith(arg)]
+            if len(results) > 0:
                 for i in results:
-                    embed.add_field(
-                        name = i["name"],
-                        value = f"{i['description']}\n`{self.bot.command_prefix}{i['usage']}`",
-                        inline = False
-                    )
+                    embed.add_field(name=i.name.title(), value=f"{i.help}\n`{self.bot._prefix}{i.usage}`", inline=False)
+            else:
+                await self.bot._reply(ctx, "I couldn't find any commands! :warning:")
+                return
         else:
-            for i in adminCommands:
-                embed.add_field(
-                    name = i["name"],
-                    value = i["description"],
-                    inline = False
-                )
+            for i in self.get_commands():
+                embed.add_field(name=i.name.title(), value=i.help, inline=False)
         await ctx.message.author.send(embed=embed)
-        await reply(ctx.message, "Check your DM's! :incoming_envelope:")
+        await self.bot._reply(ctx, "Check your DM's! :incoming_envelope:")
 
-    @commands.command()
-    @commands.check(isAdmin)
+    @commands.command(help="Restart the entire bot.", usage="restart")
     async def restart(self, ctx):
-        embed = discord.Embed(
-            description = f"The admin `{ctx.author.name}#{ctx.author.discriminator}` has restarted the bot.",
-            color = discord.Colour(botSettings["embedColour"])
-        )
-        embed.set_author(
-            name = "Currently being restarted.",
-            icon_url = self.bot.user.avatar_url
-        )
-        embed.set_footer(
-            text = "If this wasn't authorized, call the police!"
-        )
-        await self.bot.get_user(botSettings["creator"]).send(embed=embed)
-        await reply(ctx.message, "Restarting... :arrows_counterclockwise:")
+        embed = self.bot._create_embed(ctx=ctx, description=f"The bot is being restarted.")
+        await self.bot.get_channel(self.bot._settings["logsChannel"]).send(embed=embed)
+        await ctx.send(embed=embed)
         print("Restarting...")
+        #self.bot.sqlConnection.close()
         await self.bot.close()
 
-    @commands.command()
-    @commands.check(isAdmin)
-    async def hostinfo(self, ctx):
-        embed = discord.Embed(
-            color = discord.Colour(botSettings["embedColour"])
-        )
-        embed.set_author(
-            name = "Host Information",
-            icon_url = self.bot.user.avatar_url
-        )
-        embed.set_footer(
-            text = "Haha, only bot admins can do this!"
-        )
-        embed.add_field(
-            name = "Operating System",
-            value = f"Name: `{platform()}`",
-            inline = False
-        )
-        embed.add_field(
-            name = "Versions",
-            value = f"""
-                Python: `{python_version()}`
-                Library: `discord.py {discord.__version__}`
-            """,
-            inline = False
-        )
-        embed.add_field(
-            name = "CPU",
-            value = f"""
-                Model: `{cpuinfo['brand']}`
-                Cores: `{cpuinfo['count']}`
-                Architecture: `{cpuinfo['arch']}`
-                Usage: `{cpu_percent(interval=1)}%`
-            """,
-            inline = False
-        )
-        memory = virtual_memory()
-        embed.add_field(
-            name = "RAM",
-            value = f"""
-                Used: `{round((memory.used)/1024**3, 1)}GB`
-                Total: `{round((memory.total)/1024**3, 1)}GB`
-            """,
-            inline = False
-        )
-        await ctx.send(embed=embed)
-
-    @commands.command()
-    @commands.check(isAdmin)
+    @commands.command(help="Set the bots status.", usage="setpresence [*online/idle/dnd] [game name]")
     async def setpresence(self, ctx, status=None, *, game=None):
         if status:
             status = status.lower()
             if status in ["online", "idle", "dnd"]:
-                await self.bot.change_presence(status = discord.Status[status], activity = discord.Game(f"{self.bot.command_prefix}help{(f' | {game}' if game else '')}"))
-                embed = discord.Embed(
-                    description = "Successfully changed bot presence.",
-                    color = discord.Colour(botSettings["embedColour"])
-                )
-                embed.set_author(
-                    name = "Set Presence",
-                    icon_url = self.bot.user.avatar_url
-                )
-                embed.set_footer(
-                    text = "Haha, only bot admins can do this!"
-                )
-                embed.add_field(
-                    name = "Status",
-                    value = f"`{status}`",
-                    inline = False
-                )
-                embed.add_field(
-                    name = "Game",
-                    value = f"`{game}`",
-                    inline = False
-                )
+                await self.bot.change_presence(status=discord.Status[status], activity=discord.Game(f"{self.bot._prefix}help{f' | {game}' if game else ''}"))
+                embed = self.bot._create_embed(ctx=ctx, description="Successfully changed bot presence.")
+                embed.add_field(name="Status", value=f"`{status}`")
+                embed.add_field(name="Game", value=f"`{game}`")
+                await self.bot.get_channel(self.bot._settings["logsChannel"]).send(embed=embed)
                 await ctx.send(embed=embed)
             else:
-                await reply(ctx.message, "That status wasn't recognised! :warning:")
+                await self.bot._reply(ctx, "That status wasn't recognised! :warning:")
         else:
-            await reply(ctx.message, "Please specify the status! :warning:")
+            await self.bot._reply(ctx, "Please specify the status! :warning:")
 
-    @commands.command()
-    @commands.check(isAdmin)
+    @commands.command(help="Reload an extension.", usage="reload [*extension name]")
     async def reload(self, ctx, arg=None):
         if arg:
             arg = f"extensions.{arg.lower()}"
             if arg == "extensions.news":
-                self.bot.get_cog("news").bg_task.cancel()
+                news = self.bot.get_cog("news").bg_task
+                if news:
+                    news.cancel()
             elif arg == "extensions.post":
-                self.bot.get_cog("post").bg_task.cancel()
-            self.bot.unload_extension(arg)
+                post = self.bot.get_cog("post").bg_task
+                if post:
+                    post.cancel()
+            try:
+                self.bot.unload_extension(arg)
+            except:
+                pass
             self.bot.load_extension(arg)
-            embed = discord.Embed(
-                description = f"The admin `{ctx.author.name}#{ctx.author.discriminator}` has reloaded `{arg}`.",
-                color = discord.Colour(botSettings["embedColour"])
-            )
-            embed.set_author(
-                name = "Extension currently being reloaded.",
-                icon_url = self.bot.user.avatar_url
-            )
-            embed.set_footer(
-                text = "If this wasn't authorized, call the police!"
-            )
-            await self.bot.get_user(botSettings["creator"]).send(embed=embed)
-            embed = discord.Embed(
-                description = f"Successfully reloaded extension `{arg}`.",
-                color = discord.Colour(botSettings["embedColour"])
-            )
-            embed.set_author(
-                name = "Reload Extension",
-                icon_url = self.bot.user.avatar_url
-            )
-            embed.set_footer(
-                text = "Haha, only bot admins can do this!"
-            )
+            embed = self.bot._create_embed(ctx=ctx, description=f"Successfully reloaded extension `{arg}`.")
+            await self.bot.get_channel(self.bot._settings["logsChannel"]).send(embed=embed)
             await ctx.send(embed=embed)
         else:
-            await reply(ctx.message, "Please specify the extension to reload! :warning:")
+            await self.bot._reply(ctx, "Please specify the extension to reload! :warning:")
 
-    @commands.command()
-    @commands.check(isAdmin)
+    @commands.command(help="Evaluate an expression.", usage="eval [*command]")
     async def eval(self, ctx, *, args=None):
-        embed = discord.Embed(
-            color = discord.Colour(botSettings["embedColour"])
-        )
-        embed.set_author(
-            name = "Evaluate",
-            icon_url = self.bot.user.avatar_url
-        )
-        embed.set_footer(
-            text = "Haha, only bot admins can do this!"
-        )
-        embed.add_field(
-            name = "Input",
-            value = f"```python\n{args}```",
-            inline = False
-        )
+        embed = self.bot._create_embed(ctx=ctx)
+        embed.add_field(name="Input", value=f"```py\n{args}```", inline=False)
         cmd = eval(args)
         if isawaitable(cmd):
             cmd = await cmd
-        embed.add_field(
-            name = "Output",
-            value = f"```python\n{cmd}```",
-            inline = False
-        )
+        embed.add_field(name="Output", value=f"```py\n{cmd}```", inline=False)
+        await self.bot.get_channel(self.bot._settings["logsChannel"]).send(embed=embed)
         await ctx.send(embed=embed)
 
-    @commands.command()
-    @commands.check(isAdmin)
+    @commands.command(help="Send a message to every subscribed server.", usage="announce [*message]")
     async def announce(self, ctx, *, args=None):
         if args:
-            embed = discord.Embed(
-                description = args,
-                color = discord.Colour(botSettings["embedColour"])
-            )
-            embed.set_author(
-                name = "Announcement",
-                icon_url = self.bot.user.avatar_url
-            )
-            embed.set_footer(
-                text = f"From '{ctx.author.name}#{ctx.author.discriminator}'."
-            )
+            embed = self.bot._create_embed(title="Announcement", description=args, footer=f"From '{ctx.author}'.")
             with self.bot.sqlConnection.cursor() as cur:
                 cur.execute("SELECT * FROM serverList")
                 for i in cur.fetchall():
@@ -260,30 +115,37 @@ class admin:
                         await channel.send(embed=embed)
                     except:
                         continue
-                await reply(ctx.message, "Done! :mailbox_with_mail:")
+                await self.bot._reply(ctx, "Done! :mailbox_with_mail:")
         else:
-            await reply(ctx.message, "Please specify the message to send! :warning:")
+            await self.bot._reply(ctx, "Please specify the message to send! :warning:")
 
-    @commands.command()
-    @commands.check(isAdmin)
+    """@commands.command(help="Query the database.", usage="sql [*query]")
+    async def sql(self, ctx, *, args=None):
+        if args:
+            with self.bot.sqlConnection.cursor() as cur:
+                cur.execute(args)
+                cur.fetchall()
+                await ctx.send(embed=self.bot._create_embed(ctx=ctx, description=f"{cur.fetchall()}"))
+        else:
+            await self.bot._reply(ctx, "Please specify a query.")"""
+
+    @commands.command(help="Delete a row from the database.", usage="deleterow [*id]")
     async def deleterow(self, ctx, arg=None):
         if arg:
-            embed = discord.Embed(
-                description = f"Deleted row `{arg}`.",
-                color = discord.Colour(botSettings["embedColour"])
-            )
-            embed.set_author(
-                name = "Delete Row",
-                icon_url = self.bot.user.avatar_url
-            )
-            embed.set_footer(
-                text = "Haha, only bot admins can do this!"
-            )
             with self.bot.sqlConnection.cursor() as cur:
                 cur.execute(f"DELETE FROM serverList WHERE id = '{arg}';")
+                embed = self.bot._create_embed(ctx=ctx, description=f"Deleted row `{arg}`.")
+                await self.bot.get_channel(self.bot._settings["logsChannel"]).send(embed=embed)
                 await ctx.send(embed=embed)
         else:
-            await reply(ctx.message, "Please specify an ID.")
+            await self.bot._reply(ctx, "Please specify an ID.")
+
+    @commands.command(help="Forcefully make the bot leave the server.", usage="leave")
+    async def leave(self, ctx):
+        embed = self.bot._create_embed(ctx=ctx, description=f"Leaving `{ctx.guild.name}`... :wave:")
+        await self.bot.get_channel(self.bot._settings["logsChannel"]).send(embed=embed)
+        await ctx.send(embed=embed)
+        await ctx.guild.leave()
 
 def setup(bot):
     bot.add_cog(admin(bot))

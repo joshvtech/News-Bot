@@ -4,13 +4,15 @@
     439081159620689940,
     306771291250229250
   ],
+  "logsChannel": 568187383007412224,
   "embedColour": 8323072,
-  "motd": "It takes a great deal of bravery to stand up to our enemies, but just as much to stand up to our friends.",
   "links": {
     "website": "http://news-bot.tk/",
     "invite": "http://news-bot.tk/redirects/invite.html",
     "server": "http://news-bot.tk/redirects/server.html",
     "vote": "http://news-bot.tk/#vote",
-    "trello": "https://trello.com/b/0ACzWBv6/news-bot"
-  }
+    "trello": "https://trello.com/b/0ACzWBv6/news-bot",
+    "github": "https://github.com/Bappy0X/News-Bot"
+  },
+  "motd": "It takes a great deal of bravery to stand up to our enemies, but just as much to stand up to our friends."
 }
