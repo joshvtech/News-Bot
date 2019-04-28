@@ -24,18 +24,17 @@ class subscription(commands.Cog):
         if args:
             argsFriendly = libs.sourceAlias.check(args.lower())
             if argsFriendly:
-                with self.bot.sqlConnection.cursor() as cur:
-                    cur.execute(f"SELECT * FROM serverList WHERE id = '{ctx.guild.id}';")
-                    sources = cur.fetchone()[4].split(",")
-                    if argsFriendly in sources:
-                        await self.bot._reply(ctx, "You're already subscribed to that source! :warning:")
-                    else:
-                        if "" in sources:
-                            sources.remove("")
-                        sources.append(argsFriendly)
-                        sources = ",".join(sources)
-                        cur.execute(f"UPDATE serverList SET subSources = '{sources}' WHERE id = '{ctx.guild.id}';")
-                        await self.bot._reply(ctx, f"Successfully subscribed to `{argsFriendly}`! :bell:")
+                guildSettings = await self.bot.sql_conn.fetchrow("SELECT * FROM serverList WHERE id = $1;", str(ctx.guild.id))
+                sources = guildSettings["subsources"].split(",")
+                if argsFriendly in sources:
+                    await self.bot._reply(ctx, "You're already subscribed to that source! :warning:")
+                else:
+                    if "" in sources:
+                        sources.remove("")
+                    sources.append(argsFriendly)
+                    sources = ",".join(sources)
+                    await self.bot.sql_conn.execute("UPDATE serverList SET subSources = $1 WHERE id = $2;", sources, str(ctx.guild.id))
+                    await self.bot._reply(ctx, f"Successfully subscribed to `{argsFriendly}`! :bell:")
             else:
                 await self.bot._reply(ctx, "Please specify a supported source! :warning:")
         else:
@@ -46,26 +45,24 @@ class subscription(commands.Cog):
         if args:
             argsFriendly = libs.sourceAlias.check(args.lower())
             if argsFriendly:
-                with self.bot.sqlConnection.cursor() as cur:
-                    cur.execute(f"SELECT * FROM serverList WHERE id = '{ctx.guild.id}';")
-                    sources = cur.fetchone()[4].split(",")
-                    if argsFriendly in sources:
-                        sources.remove(argsFriendly)
-                        sources = ",".join(sources)
-                        cur.execute(f"UPDATE serverList SET subSources = '{sources}' WHERE id = '{ctx.guild.id}';")
-                        await self.bot._reply(ctx, f"Successfully unsubscribed from `{argsFriendly}`! :no_bell:")
-                    else:
-                        await self.bot._reply(ctx, "You're not subscribed to that source! :no_bell:")
+                guildSettings = await self.bot.sql_conn.fetchrow("SELECT * FROM serverList WHERE id = $1;", str(ctx.guild.id))
+                sources = guildSettings["subsources"].split(",")
+                if argsFriendly in sources:
+                    sources.remove(argsFriendly)
+                    sources = ",".join(sources)
+                    await self.bot.sql_conn.execute("UPDATE serverList SET subSources = $1 WHERE id = $2;", sources, str(ctx.guild.id))
+                    await self.bot._reply(ctx, f"Successfully unsubscribed from `{argsFriendly}`! :no_bell:")
+                else:
+                    await self.bot._reply(ctx, "You're not subscribed to that source! :no_bell:")
             else:
                 await self.bot._reply(ctx, "Please specify a supported source! :warning:")
         else:
             await self.bot._reply(ctx, "Please specify what source like to unsubscribe from! :warning:")
 
-    @commands.command(aliases=["setchannel"])
+    @commands.command(aliases=["setchannel", "subchannel"])
     async def setnewschannel(self, ctx):
-        with self.bot.sqlConnection.cursor() as cur:
-            cur.execute(f"UPDATE serverList SET subChannel = '{ctx.channel.id}' WHERE id = '{ctx.guild.id}';")
-            await self.bot._reply(ctx, f"Successfully changed subscription channel to `{ctx.channel.name}`! :bell:")
+        await self.bot.sql_conn.execute("UPDATE serverList SET subChannel = $1 WHERE id = $2;", str(ctx.channel.id), str(ctx.guild.id))
+        await self.bot._reply(ctx, f"Successfully changed subscription channel to `{ctx.channel.name}`! :bell:")
 
 def setup(bot):
     bot.add_cog(subscription(bot))

@@ -7,10 +7,11 @@
   "logsChannel": 568187383007412224,
   "embedColour": 8323072,
   "links": {
-    "website": "http://news-bot.tk/",
-    "invite": "http://news-bot.tk/redirects/invite.html",
-    "server": "http://news-bot.tk/redirects/server.html",
-    "vote": "http://news-bot.tk/#vote",
+    "website": "https://news-bot.tk/",
+    "invite": "https://news-bot.tk/redirects/invite.html",
+    "server": "https://news-bot.tk/redirects/server.html",
+    "vote": "https://news-bot.tk/#vote",
+    "sources": "https://news-bot.tk/#sources",
     "trello": "https://trello.com/b/0ACzWBv6/news-bot",
     "github": "https://github.com/Bappy0X/News-Bot"
   },

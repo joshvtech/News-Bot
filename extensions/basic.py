@@ -77,8 +77,8 @@ class basic(commands.Cog):
             embed.add_field(
                 name="Advanced",
                 value=f"""
-                    Python Version: `{python_version()}`
-                    discord.py Version: `{discord.__version__}`
+                    <:python:568799857721081872> Python Version: `{python_version()}`
+                    <:discord:569501148214460427> discord.py Version: `{discord.__version__}`
                     CPU Usage: `{cpu_percent(interval=1)}%`
                     RAM Usage: `{round(memory.used/1024**3, 1)}GB` of `{round(memory.total/1024**3, 1)}GB` (`{memory.percent}%`)"""
             )
@@ -86,12 +86,8 @@ class basic(commands.Cog):
 
     @commands.command()
     async def serverinfo(self, ctx):
-        with self.bot.sqlConnection.cursor() as cur:
-            cur.execute(f"SELECT * FROM serverList WHERE id = '{ctx.message.guild.id}';")
-            await ctx.send(embed=self.bot._create_embed(
-                ctx=ctx,
-                description="\n".join([f"{r}: `{None if v == '' else v}`" for r, v in zip(["id", "censorship", "censoredMessage", "subChannel", "subSources"], list(cur.fetchone()))])
-            ))
+        guildSettings = await self.bot.sql_conn.fetchrow("SELECT * FROM serverList WHERE id = $1;", str(ctx.guild.id))
+        await ctx.send(embed=self.bot._create_embed(ctx=ctx, description="\n".join([f"{r}: `{None if v == '' else v}`" for r, v in zip(guildSettings.keys(), guildSettings)])))
 
     @commands.command()
     async def motd(self, ctx):

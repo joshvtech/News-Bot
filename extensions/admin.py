@@ -3,13 +3,22 @@ import discord
 from discord.ext import commands
 
 ## NOTE: Import Required Libraries
-from inspect import isawaitable
+import ast
 
 ## NOTE: Import Custom Libraries
 
 ## NOTE: Define Variables
 
 ## NOTE: Define Functions
+def insert_returns(body):
+    if isinstance(body[-1], ast.Expr):
+        body[-1] = ast.Return(body[-1].value)
+        ast.fix_missing_locations(body[-1])
+    if isinstance(body[-1], ast.If):
+        insert_returns(body[-1].body)
+        insert_returns(body[-1].orelse)
+    if isinstance(body[-1], ast.With):
+        insert_returns(body[-1].body)
 
 ## NOTE: Define Cog
 class admin(commands.Cog):
@@ -50,7 +59,6 @@ class admin(commands.Cog):
         await self.bot.get_channel(self.bot._settings["logsChannel"]).send(embed=embed)
         await ctx.send(embed=embed)
         print("Restarting...")
-        #self.bot.sqlConnection.close()
         await self.bot.close()
 
     @commands.command(help="Set the bots status.", usage="setpresence [*online/idle/dnd] [game name]")
@@ -69,74 +77,84 @@ class admin(commands.Cog):
         else:
             await self.bot._reply(ctx, "Please specify the status! :warning:")
 
-    @commands.command(help="Reload an extension.", usage="reload [*extension name]")
-    async def reload(self, ctx, arg=None):
+    @commands.command(help="Reload an extension.", usage="load|reload [*extension]", aliases=["reload"])
+    async def load(self, ctx, arg=None):
         if arg:
             arg = f"extensions.{arg.lower()}"
-            if arg == "extensions.news":
-                news = self.bot.get_cog("news").bg_task
-                if news:
-                    news.cancel()
-            elif arg == "extensions.post":
-                post = self.bot.get_cog("post").bg_task
-                if post:
-                    post.cancel()
             try:
                 self.bot.unload_extension(arg)
             except:
                 pass
             self.bot.load_extension(arg)
-            embed = self.bot._create_embed(ctx=ctx, description=f"Successfully reloaded extension `{arg}`.")
+            embed = self.bot._create_embed(ctx=ctx, description=f"Successfully {ctx.invoked_with}ed extension `{arg}`.")
             await self.bot.get_channel(self.bot._settings["logsChannel"]).send(embed=embed)
             await ctx.send(embed=embed)
         else:
             await self.bot._reply(ctx, "Please specify the extension to reload! :warning:")
 
-    @commands.command(help="Evaluate an expression.", usage="eval [*command]")
-    async def eval(self, ctx, *, args=None):
+    @commands.command(help="Load an extension.", usage="unload [*extension]")
+    async def unload(self, ctx, arg=None):
+        if arg:
+            arg = f"extensions.{arg.lower()}"
+            self.bot.unload_extension(arg)
+            embed = self.bot._create_embed(ctx=ctx, description=f"Successfully unloaded extension `{arg}`.")
+            await self.bot.get_channel(self.bot._settings["logsChannel"]).send(embed=embed)
+            await ctx.send(embed=embed)
+        else:
+            await self.bot._reply(ctx, "Please specify the extension to unload! :warning:")
+
+    @commands.command(help="Read, evaluate and print codeblocks.", usage="repl|python|py [*command]", aliases=["python", "py"])
+    async def repl(self, ctx, *, args=None):
+        args = args.strip("`")
+        cmd = "\n".join([f"    {i}" for i in args.splitlines()])
+        fn_name = "_repl"
+        parsed = ast.parse(f"async def {fn_name}():\n{cmd}")
+        body = parsed.body[0].body
+        insert_returns(body)
+        env = {
+            "bot": self.bot,
+            "ctx": ctx,
+            "message": ctx.message,
+            "guild": ctx.guild,
+            "channel": ctx.channel,
+            "author": ctx.author
+        }
+        env.update(globals())
+        exec(compile(parsed, filename="<ast>", mode="exec"), env)
+        result = await eval(f"{fn_name}()", env)
         embed = self.bot._create_embed(ctx=ctx)
         embed.add_field(name="Input", value=f"```py\n{args}```", inline=False)
-        cmd = eval(args)
-        if isawaitable(cmd):
-            cmd = await cmd
-        embed.add_field(name="Output", value=f"```py\n{cmd}```", inline=False)
+        embed.add_field(name="Output", value=f"```py\n{result}```", inline=False)
         await self.bot.get_channel(self.bot._settings["logsChannel"]).send(embed=embed)
         await ctx.send(embed=embed)
+
+    """@commands.command(help="Execute a shell command", usage="shell [*command]")
+    async def shell(self, ctx, *, args=None):
+        result = subprocess.run(args.split(), stdout=subprocess.PIPE, shell=True)
+        await ctx.send(f"```\n$ {args}\n{result.stdout.decode('utf-8')}```")"""
 
     @commands.command(help="Send a message to every subscribed server.", usage="announce [*message]")
     async def announce(self, ctx, *, args=None):
         if args:
             embed = self.bot._create_embed(title="Announcement", description=args, footer=f"From '{ctx.author}'.")
-            with self.bot.sqlConnection.cursor() as cur:
-                cur.execute("SELECT * FROM serverList")
-                for i in cur.fetchall():
-                    channel = self.bot.get_channel(int(i[3]))
-                    try:
-                        await channel.send(embed=embed)
-                    except:
-                        continue
-                await self.bot._reply(ctx, "Done! :mailbox_with_mail:")
+            results = await self.bot.sql_conn.fetch("SELECT * FROM serverList;")
+            for i in results:
+                channel = self.bot.get_channel(int(i["subchannel"]))
+                try:
+                    await channel.send(embed=embed)
+                except:
+                    continue
+            await self.bot._reply(ctx, "Done! :mailbox_with_mail:")
         else:
             await self.bot._reply(ctx, "Please specify the message to send! :warning:")
-
-    """@commands.command(help="Query the database.", usage="sql [*query]")
-    async def sql(self, ctx, *, args=None):
-        if args:
-            with self.bot.sqlConnection.cursor() as cur:
-                cur.execute(args)
-                cur.fetchall()
-                await ctx.send(embed=self.bot._create_embed(ctx=ctx, description=f"{cur.fetchall()}"))
-        else:
-            await self.bot._reply(ctx, "Please specify a query.")"""
 
     @commands.command(help="Delete a row from the database.", usage="deleterow [*id]")
     async def deleterow(self, ctx, arg=None):
         if arg:
-            with self.bot.sqlConnection.cursor() as cur:
-                cur.execute(f"DELETE FROM serverList WHERE id = '{arg}';")
-                embed = self.bot._create_embed(ctx=ctx, description=f"Deleted row `{arg}`.")
-                await self.bot.get_channel(self.bot._settings["logsChannel"]).send(embed=embed)
-                await ctx.send(embed=embed)
+            await self.bot.sql_conn.execute("DELETE FROM serverList WHERE id = $1;", str(arg))
+            embed = self.bot._create_embed(ctx=ctx, description=f"Deleted row `{arg}`.")
+            await self.bot.get_channel(self.bot._settings["logsChannel"]).send(embed=embed)
+            await ctx.send(embed=embed)
         else:
             await self.bot._reply(ctx, "Please specify an ID.")
 

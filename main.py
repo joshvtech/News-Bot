@@ -3,7 +3,7 @@ import discord
 from discord.ext import commands
 
 ## NOTE: Import Required Libraries
-import aiohttp, psycopg2
+import aiohttp, asyncpg
 from json import load
 from sys import exc_info
 from traceback import print_exc
@@ -17,6 +17,10 @@ import libs.censorshipCheck
 settings = load(open("./data/settings.json"))
 prefix = environ["PREFIX"]
 start_time = datetime.now().replace(microsecond=0)
+
+## NOTE: Create the Bot...
+bot = commands.AutoShardedBot(command_prefix=commands.when_mentioned_or(prefix), case_insensitive=True)
+bot.remove_command("help")
 
 ## NOTE: Define Functions
 async def reply(ctx, string):
@@ -32,9 +36,8 @@ def create_embed(ctx=None, title=None, description=None, footer=None):
 def get_uptime():
     return(datetime.now().replace(microsecond=0) - start_time)
 
-## NOTE: Create the Bot...
-bot = commands.AutoShardedBot(command_prefix=commands.when_mentioned_or(prefix), case_insensitive=True)
-bot.remove_command("help")
+async def sql_connect():
+    bot.sql_conn = await asyncpg.create_pool(f"{environ['DATABASE_URL']}?sslmode=require")
 
 ## NOTE: Set Bot Vars
 bot._settings = settings
@@ -72,39 +75,35 @@ async def on_ready():
     await bot.change_presence(activity = discord.Game(f"{bot._prefix}help"))
     async with aiohttp.ClientSession() as session:
         async with session.get("http://ipinfo.io/json") as response:
-            info = await response.json()
-            embed = bot._create_embed(title="Bot Started", description=f"The prefix is `{bot._prefix}`.", footer="If this wasn't you, call the police!")
-            embed.add_field(name="IP Address", value=info["ip"])
-            embed.add_field(name="Server Location", value=info["loc"])
-            embed.add_field(name="Startup Time", value=f"{get_uptime().seconds} seconds")
-            await bot.get_channel(settings["logsChannel"]).send(embed=embed)
+            json = await response.json()
+    embed = bot._create_embed(title="Bot Started", description=f"The prefix is `{bot._prefix}`.", footer="If this wasn't you, call the police!")
+    embed.add_field(name="IP Address", value=json["ip"])
+    embed.add_field(name="Server Location", value=json["loc"])
+    embed.add_field(name="Startup Time", value=get_uptime())
+    await bot.get_channel(settings["logsChannel"]).send(embed=embed)
 
 @bot.event
 async def on_guild_join(guild):
-    with bot.sqlConnection.cursor() as cur:
-        cur.execute("INSERT INTO serverList VALUES (%s, %s, %s, %s, %s);", (str(guild.id), False, "Please keep it clean! :underage:", "0", ""))
+    await bot.sql_conn.execute("INSERT INTO serverList VALUES ($1, false, 'Please keep it clean! :underage:', '0', '');", str(guild.id))
 
 @bot.event
 async def on_guild_remove(guild):
-    with bot.sqlConnection.cursor() as cur:
-        cur.execute(f"DELETE FROM serverList WHERE id = '{str(guild.id)}';")
+    await bot.sql_conn.execute("DELETE FROM serverList WHERE id = $1;", str(guild.id))
 
 @bot.event
 async def on_message(message):
     if message.guild and not message.author.bot:
-        with bot.sqlConnection.cursor() as cur:
-            cur.execute(f"SELECT * FROM serverList WHERE id = '{message.guild.id}';")
-            guildSettings = cur.fetchone()
-            if guildSettings:
-                if guildSettings[1]:
-                    if libs.censorshipCheck.check(message):
-                        await message.delete()
-                        await bot._reply(message, guildSettings[2])
-                        return
-                await bot.process_commands(message)
-                bot._message_count += 1
-            else:
-                cur.execute("INSERT INTO serverList VALUES (%s, %s, %s, %s, %s);", (str(message.guild.id), False, "Please keep it clean! :underage:", "0", ""))
+        guildSettings = await bot.sql_conn.fetchrow("SELECT * FROM serverList WHERE id = $1;", str(message.guild.id))
+        if guildSettings:
+            if guildSettings["censorship"]:
+                if libs.censorshipCheck.check(message):
+                    await message.delete()
+                    await bot._reply(message, guildSettings["censoredmessage"])
+                    return
+            await bot.process_commands(message)
+            bot._message_count += 1
+        else:
+            await bot.sql_conn.execute("INSERT INTO serverList VALUES ($1, false, 'Please keep it clean! :underage:', '0', '');", str(message.guild.id))
 
 @bot.event
 async def on_command(ctx):
@@ -112,14 +111,13 @@ async def on_command(ctx):
 
 ## NOTE: Start Doing Important Stuff...
 if __name__ == "__main__":
-    ## NOTE: Connect to Database
-    bot.sqlConnection = psycopg2.connect(environ["DATABASE_URL"])
-    bot.sqlConnection.autocommit = True
     ## NOTE: Add Extensions
     for i in [f"extensions.{i[:-3]}" for i in listdir("extensions") if not i == "__pycache__"]:
         try:
             bot.load_extension(i)
         except Exception as error:
             print(f"{i} cannot be loaded.\n{error}")
-    ## NOTE: Run the Bot!
+    ## NOTE: Connect to PostgreSQL
+    bot.loop.run_until_complete(sql_connect())
+    ## NOTE: Run the Bot
     bot.run(environ["BOT_TOKEN"])

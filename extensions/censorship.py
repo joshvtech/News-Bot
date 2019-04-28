@@ -24,31 +24,21 @@ class censorship(commands.Cog):
         if arg:
             arg = arg.lower()
             if arg in ["true", "false"]:
-                with self.bot.sqlConnection.cursor() as cur:
-                    cur.execute(f"""
-                        UPDATE serverList
-                        SET censorship = {arg=="true"}
-                        WHERE id = '{ctx.message.guild.id}';
-                    """)
-                    await ctx.send(embed=self.bot._create_embed(ctx=ctx, description=f"Successfully changed censorship status to `{arg=='true'}`."))
+                await self.bot.sql_conn.execute("UPDATE serverList SET censorship = $1 WHERE id = $2;", arg=="true", str(ctx.guild.id))
+                await ctx.send(embed=self.bot._create_embed(ctx=ctx, description=f"Successfully changed censorship status to `{arg=='true'}`."))
             else:
                 await self.bot._reply(ctx, "Please read the command usage! :warning:")
         else:
             await self.bot._reply(ctx, "Please read the command usage! :warning:")
 
     @commands.command(aliases=["censormessage"])
-    async def setcensormessage(self, ctx, *, arg=None):
-        if arg:
+    async def setcensormessage(self, ctx, *, args=None):
+        if args:
             if libs.censorshipCheck.check(ctx.message):
                 await self.bot._reply(ctx, "Please make sure that your message is clean! :warning:")
             else:
-                with self.bot.sqlConnection.cursor() as cur:
-                    cur.execute(f"""
-                        UPDATE serverList
-                        SET censoredMessage = (%s)
-                        WHERE id = '{ctx.message.guild.id}';
-                    """, (arg, ))
-                    await ctx.send(embed=self.bot._create_embed(ctx=ctx, description="Successfully changed censorship message to `{}`.".format(arg)))
+                await self.bot.sql_conn.execute("UPDATE serverList SET censoredMessage = $1 WHERE id = $2;", args, str(ctx.guild.id))
+                await ctx.send(embed=self.bot._create_embed(ctx=ctx, description=f"Successfully changed censorship message to `{args}`."))
         else:
             await self.bot._reply(ctx, "Please specify the message! :warning:")
 
