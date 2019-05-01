@@ -21,5 +21,7 @@ def check(args):
         return("ign")
     elif args in ["hollywood life", "hollywoodlife", "hollywood", "hl"]:
         return("hollywoodLife")
+    elif args in ["fox news", "foxnews", "fox"]:
+        return("foxNews")
     else:
         return(None)

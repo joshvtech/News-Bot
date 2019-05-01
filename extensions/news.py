@@ -13,6 +13,7 @@ from libs import sourceAlias
 
 ## NOTE: Define Variables
 sources = [
+    #rss url, pubDate ignore, description ignore, name, shortName, logo url
     ["http://feeds.bbci.co.uk/news/world/rss.xml",             -4, False, "BBC News",       "bbcNews",       "https://i2.feedspot.com/15793.jpg"],   #BBC News
     ["https://www.cnet.com/rss/gaming/",                       -6, False, "CNET",           "cnet",          "https://i1.feedspot.com/3708244.jpg"], #CNET
     ["https://rss.nytimes.com/services/xml/rss/nyt/World.xml", -4, False, "New York Times", "newYorkTimes",  "https://i2.feedspot.com/4719130.jpg"], #New York Times
@@ -23,7 +24,8 @@ sources = [
     ["http://rss.cnn.com/rss/edition_world.rss",               -4, True,  "CNN",            "cnn",           "https://i3.feedspot.com/3298.jpg"],    #CNN
     ["https://www.space.com/feeds/all",                        -6, False, "Space.com",      "spaceCom",      "https://i2.feedspot.com/4707531.jpg"], #Space.com
     ["http://feeds.ign.com/ign/games-all",                     -4, False, "IGN",            "ign",           "https://i1.feedspot.com/1180874.jpg"], #IGN
-    ["https://hollywoodlife.com/feed/",                        -6, True,  "Hollywood Life", "hollywoodLife", "https://i2.feedspot.com/45422.jpg"]    #Perez Hilton
+    ["https://hollywoodlife.com/feed/",                        -6, True,  "Hollywood Life", "hollywoodLife", "https://i2.feedspot.com/45422.jpg"],   #Hollywood Life
+    ["http://feeds.foxnews.com/foxnews/world.rss",             -4, True,  "FOX News",       "foxNews",       "https://i1.feedspot.com/118508.jpg"]   #FOX News
 ]
 class Story:
     def __init__(self, title, description, link, pubDate, name, shortName, logo):
@@ -40,20 +42,19 @@ firstRun = True
 feed = []
 
 ## NOTE: Define Functions
+def create_news_embed(self, article):
+    embed = self.bot._create_embed(title=article.name, footer=f"News-Bot does not represent nor endorse {article.name}.")
+    embed.set_thumbnail(url=article.logo)
+    embed.add_field(name=article.title, value=article.description)
+    embed.add_field(name="Read This Story", value=article.link)
+    embed.timestamp = article.pubDate
+    return(embed)
 
 ## NOTE: Define Cog
 class news(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.bg_task = self.bot.loop.create_task(self.update())
-
-    def createNewsEmbed(self, article):
-        embed = self.bot._create_embed(title=article.name, footer=f"News-Bot does not represent nor endorse {article.name}.")
-        embed.set_thumbnail(url=article.logo)
-        embed.add_field(name=article.title, value=article.description)
-        embed.add_field(name="Read This Story", value=article.link)
-        embed.timestamp = article.pubDate
-        return(embed)
 
     async def updateAll(self):
         results = []
@@ -87,7 +88,7 @@ class news(commands.Cog):
                 if article not in feed:
                     feed.append(article)
                     if not firstRun:
-                        embed = self.createNewsEmbed(article)
+                        embed = create_news_embed(self, article)
                         results = await self.bot.sql_conn.fetch("SELECT * FROM serverList;")
                         for i in results:
                             channel = self.bot.get_channel(int(i["subchannel"]))
@@ -104,7 +105,7 @@ class news(commands.Cog):
         if args:
             argsFriendly = sourceAlias.check(args.lower())
             if argsFriendly:
-                await ctx.send(embed=self.createNewsEmbed([i for i in feed if i.shortName == argsFriendly][-1]))
+                await ctx.send(embed=create_news_embed(self, [i for i in feed if i.shortName == argsFriendly][-1]))
             else:
                 await self.bot._reply(ctx, "Please specify a supported source! :warning:")
         else:

@@ -18,8 +18,8 @@ class basic(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def help(self, ctx):
-        await ctx.send(embed=self.bot._create_embed(
+    async def help(self, ctx, arg=None):
+        embed = self.bot._create_embed(
             title="Help",
             description = f"""
                 The current prefix is `{self.bot._prefix}`.
@@ -27,7 +27,23 @@ class basic(commands.Cog):
                 You can view our Trello [here]({self.bot._settings['links']['trello']}) for upcoming updates.
                 You can also check out the source code on GitHub [here]({self.bot._settings['links']['github']}).""",
             footer="Please note that you cannot use commands in DM's!"
-        ))
+        )
+        if arg:
+            arg = arg.lower()
+            if arg in ["admin", "email"]:
+                cog = self.bot.get_cog(arg)
+                if cog:
+                    if cog.cog_check(ctx):
+                        for i in cog.get_commands():
+                            embed.add_field(name=i.name.title(), value=f"{i.help}\n`{self.bot._prefix}{i.usage}`", inline=False)
+                        try:
+                            await ctx.author.send(embed=embed)
+                        except discord.Forbidden:
+                            await self.bot._reply(ctx, "I cannot DM you, please change your privacy settings and try again! :warning:")
+                        else:
+                            await self.bot._reply(ctx, "Check your DM's! :incoming_envelope:")
+                        return
+        await ctx.send(embed=embed)
 
     @commands.command()
     async def ping(self, ctx):

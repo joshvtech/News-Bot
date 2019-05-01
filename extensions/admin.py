@@ -28,31 +28,6 @@ class admin(commands.Cog):
     def cog_check(self, ctx):
         return(ctx.author.id in self.bot._settings["admins"])
 
-    @commands.command(help="Displays this help message.", usage="adminhelp [command]")
-    async def adminhelp(self, ctx, arg=None):
-        embed = self.bot._create_embed(
-            ctx=ctx,
-            description=f"""
-                These are the commands you can use with News-Bot as an admin.
-                You can use `{self.bot._prefix}{ctx.command.usage}` to see the usage of a commmand.
-                The current prefix is `{self.bot._prefix}`.""",
-            footer="Please note that you cannot use commands in DM's!"
-        )
-        if arg:
-            arg = arg.lower()
-            results = [i for i in self.get_commands() if i.name.startswith(arg)]
-            if len(results) > 0:
-                for i in results:
-                    embed.add_field(name=i.name.title(), value=f"{i.help}\n`{self.bot._prefix}{i.usage}`", inline=False)
-            else:
-                await self.bot._reply(ctx, "I couldn't find any commands! :warning:")
-                return
-        else:
-            for i in self.get_commands():
-                embed.add_field(name=i.name.title(), value=i.help, inline=False)
-        await ctx.message.author.send(embed=embed)
-        await self.bot._reply(ctx, "Check your DM's! :incoming_envelope:")
-
     @commands.command(help="Restart the entire bot.", usage="restart")
     async def restart(self, ctx):
         embed = self.bot._create_embed(ctx=ctx, description=f"The bot is being restarted.")
@@ -127,11 +102,6 @@ class admin(commands.Cog):
         embed.add_field(name="Output", value=f"```py\n{result}```", inline=False)
         await self.bot.get_channel(self.bot._settings["logsChannel"]).send(embed=embed)
         await ctx.send(embed=embed)
-
-    """@commands.command(help="Execute a shell command", usage="shell [*command]")
-    async def shell(self, ctx, *, args=None):
-        result = subprocess.run(args.split(), stdout=subprocess.PIPE, shell=True)
-        await ctx.send(f"```\n$ {args}\n{result.stdout.decode('utf-8')}```")"""
 
     @commands.command(help="Send a message to every subscribed server.", usage="announce [*message]")
     async def announce(self, ctx, *, args=None):

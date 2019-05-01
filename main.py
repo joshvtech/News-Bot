@@ -14,9 +14,9 @@ from datetime import datetime
 import libs.censorshipCheck
 
 ## NOTE: Define Variables
-settings = load(open("./data/settings.json"))
+settings = load(open("settings.json"))
 prefix = environ["PREFIX"]
-start_time = datetime.now().replace(microsecond=0)
+start_time = datetime.now()
 
 ## NOTE: Create the Bot...
 bot = commands.AutoShardedBot(command_prefix=commands.when_mentioned_or(prefix), case_insensitive=True)
@@ -33,8 +33,8 @@ def create_embed(ctx=None, title=None, description=None, footer=None):
     embed.timestamp = ctx.message.created_at if ctx else datetime.now().astimezone()
     return(embed)
 
-def get_uptime():
-    return(datetime.now().replace(microsecond=0) - start_time)
+def get_uptime(format=True):
+    return(datetime.now().replace(microsecond=0) - start_time.replace(microsecond=0) if format else datetime.now() - start_time)
 
 async def sql_connect():
     bot.sql_conn = await asyncpg.create_pool(f"{environ['DATABASE_URL']}?sslmode=require")
@@ -79,7 +79,7 @@ async def on_ready():
     embed = bot._create_embed(title="Bot Started", description=f"The prefix is `{bot._prefix}`.", footer="If this wasn't you, call the police!")
     embed.add_field(name="IP Address", value=json["ip"])
     embed.add_field(name="Server Location", value=json["loc"])
-    embed.add_field(name="Startup Time", value=get_uptime())
+    embed.add_field(name="Startup Time", value=get_uptime(False))
     await bot.get_channel(settings["logsChannel"]).send(embed=embed)
 
 @bot.event
