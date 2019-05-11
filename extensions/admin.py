@@ -28,14 +28,6 @@ class admin(commands.Cog):
     def cog_check(self, ctx):
         return(ctx.author.id in self.bot._settings["admins"])
 
-    @commands.command(help="Restart the entire bot.", usage="restart")
-    async def restart(self, ctx):
-        embed = self.bot._create_embed(ctx=ctx, description=f"The bot is being restarted.")
-        await self.bot.get_channel(self.bot._settings["logsChannel"]).send(embed=embed)
-        await ctx.send(embed=embed)
-        print("Restarting...")
-        await self.bot.close()
-
     @commands.command(help="Set the bots status.", usage="setpresence [*online/idle/dnd] [game name]")
     async def setpresence(self, ctx, status=None, *, game=None):
         if status:
@@ -102,21 +94,6 @@ class admin(commands.Cog):
         embed.add_field(name="Output", value=f"```py\n{result}```", inline=False)
         await self.bot.get_channel(self.bot._settings["logsChannel"]).send(embed=embed)
         await ctx.send(embed=embed)
-
-    @commands.command(help="Send a message to every subscribed server.", usage="announce [*message]")
-    async def announce(self, ctx, *, args=None):
-        if args:
-            embed = self.bot._create_embed(title="Announcement", description=args, footer=f"From '{ctx.author}'.")
-            results = await self.bot.sql_conn.fetch("SELECT * FROM serverList;")
-            for i in results:
-                channel = self.bot.get_channel(int(i["subchannel"]))
-                try:
-                    await channel.send(embed=embed)
-                except:
-                    continue
-            await self.bot._reply(ctx, "Done! :mailbox_with_mail:")
-        else:
-            await self.bot._reply(ctx, "Please specify the message to send! :warning:")
 
     @commands.command(help="Delete a row from the database.", usage="deleterow [*id]")
     async def deleterow(self, ctx, arg=None):

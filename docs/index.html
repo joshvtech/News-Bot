@@ -8,7 +8,7 @@
   </head>
   <body>
     <div id="top" align="center">
-      <img src="https://cdn.discordapp.com/avatars/510342065897603073/9258238a83588de718c48e59ec7a6924.png?size=256" alt="News-Bot"/>
+      <img src="favicon.png" height="256px" alt="News-Bot"/>
     </div>
     <br/>
     <div align="center">
@@ -22,6 +22,7 @@
     <h1>Contents</h1>
     <ul>
       <li><a href="#rules">Rules</a></li>
+      <li><a href="#getting-started">Getting Started</a></li>
       <li><a href="#vote">Vote</a></li>
       <li><a href="#sources">Sources</a></li>
       <li><a href="#commands">Commands</a></li>
@@ -42,12 +43,24 @@
       <p>
         Do <b>not</b> use the bot for racism, homophobia or any other offensive purpose.<br/>
         Do <b>not</b> use macros, or spam the bot<br/>
-        <b>Never</b> share any bugs, please tell a developer in <a href="redirects/server.html" target="_blank">our server</a>.<br/>
-        <b>Don't</b> try to host News-Bot yourself. Read more about this <a href="#cloning">here</a>.<br/>
+        <b>Never</b> share any bugs, please tell a developer in <a href="redirects/server.html" target="_blank">our server</a>.<br>
+        <b>Don't</b> try to host News-Bot yourself. Read more about this <a href="#cloning">here</a>.<br>
       </p>
       <div class="back-to-top">
         <a href="#top">Back to top</a>
       </div>
+    </div>
+    <hr/>
+    <div id="getting-started">
+      <h1>Getting Started</h1>
+      <h5>Thanks for inviting News-Bot! Let's get you set up!</h5>
+      <p>
+        1) Create a News channel for News-Bot to post in, or choose an existing channel.<br><br>
+        2) Type <code>nb/setchannel</code> in that channel.<br><br>
+        3) Then type <code>nb/sub [*source]</code> for each source that you'd like to subscribe to.<br>
+      </p>
+      <p style="margin-left: 40px;">Example: <code>nb/sub bbc</code> You can find a list of sources <a href="#sources">here</a>.</p>
+      <p>You're all set! Just wait for the news source to publish their next story and you'll get it delivered to that channel!</p>
     </div>
     <hr/>
     <div id="vote">
@@ -221,9 +234,9 @@
           <td>Display the current server's settings.</td>
         </tr>
         <tr>
-          <td><code>Motd</code></td>
-          <td>None</td>
-          <td>Display the Message of The Day.</td>
+          <td><code>Qotd</code></td>
+          <td><code>motd</code></td>
+          <td>Display a Quote.</td>
         </tr>
         <tr>
           <td><code>Vote</code></td>

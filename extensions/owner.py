@@ -21,12 +21,35 @@ def create_email_embed(ctx, data, response):
     return(embed)
 
 ## NOTE: Define Cog
-class email(commands.Cog):
+class owner(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     def cog_check(self, ctx):
         return(ctx.author.id == self.bot._settings["creator"])
+
+    @commands.command(help="Restart the entire bot.", usage="restart")
+    async def restart(self, ctx):
+        embed = self.bot._create_embed(ctx=ctx, description=f"The bot is being restarted.")
+        await self.bot.get_channel(self.bot._settings["logsChannel"]).send(embed=embed)
+        await ctx.send(embed=embed)
+        print("Restarting...")
+        await self.bot.close()
+
+    @commands.command(help="Send a message to every subscribed server.", usage="announce [*message]")
+    async def announce(self, ctx, *, args=None):
+        if args:
+            embed = self.bot._create_embed(title="Announcement", description=args, footer=f"From '{ctx.author}'.")
+            results = await self.bot.sql_conn.fetch("SELECT * FROM serverList;")
+            for i in results:
+                channel = self.bot.get_channel(int(i["subchannel"]))
+                try:
+                    await channel.send(embed=embed)
+                except:
+                    continue
+            await self.bot._reply(ctx, "Done! :mailbox_with_mail:")
+        else:
+            await self.bot._reply(ctx, "Please specify the message to send! :warning:")
 
     @commands.command(help="Add a member to a mailing list.", usage="addmember|add [*list] [*email] [*user]", aliases=["add"])
     async def addmember(self, ctx, list, email, user: discord.User):
@@ -55,4 +78,4 @@ class email(commands.Cog):
             await ctx.send(embed=create_email_embed(ctx, None, await response.text()))
 
 def setup(bot):
-    bot.add_cog(email(bot))
+    bot.add_cog(owner(bot))

@@ -1,5 +1,11 @@
+body {
+  color: white;
+  background-color: #222222;
+  font-family: Tahoma;
+  padding: 0 20%;
+}
 a {
-  color: inherit;
+  color: gainsboro;
   text-decoration: none;
 }
 a:hover {
@@ -8,11 +14,8 @@ a:hover {
 .back-to-top {
   text-align: right;
 }
-body {
-  font-family: Tahoma;
-  padding: 0 20%;
-}
 button {
+  color: white;
   background-color: transparent;
   border: 2px solid;
   border-radius: 5px;
@@ -21,12 +24,11 @@ button {
   padding: 10px 20px;
 }
 button:hover {
-  background-color: black;
-  border: 2px solid black;
+  border: 2px solid gray;
   color: white;
 }
 code {
-  border: 2px solid LightGray;
+  border: 2px solid lightgray;
   border-radius: 5px;
   padding: 2px 5px;
 }
@@ -38,7 +40,7 @@ th {
   text-align: inherit;
 }
 th, td {
-    padding: 5px 20px;
+  padding: 5px 20px;
 }
 ul {
   padding-bottom: 5px;

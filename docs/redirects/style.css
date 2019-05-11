@@ -1,11 +1,13 @@
 a {
-  color: inherit;
+  color: gainsboro;
   text-decoration: none;
 }
 a:hover {
   text-decoration: underline;
 }
 body {
+  color: white;
+  background-color: #222222;
   font-family: Tahoma;
   text-align: center;
 }

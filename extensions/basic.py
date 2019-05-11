@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 
 ## NOTE: Import Required Libraries
+import aiohttp
 from psutil import cpu_percent, virtual_memory
 from platform import python_version
 
@@ -23,7 +24,7 @@ class basic(commands.Cog):
             title="Help",
             description = f"""
                 The current prefix is `{self.bot._prefix}`.
-                You can find a list of commands [here]({self.bot._settings['links']['website']}).
+                You can get started with the bot by clicking [here]({self.bot._settings['links']['getting-started']}).
                 You can view our Trello [here]({self.bot._settings['links']['trello']}) for upcoming updates.
                 You can also check out the source code on GitHub [here]({self.bot._settings['links']['github']}).""",
             footer="Please note that you cannot use commands in DM's!"
@@ -105,9 +106,13 @@ class basic(commands.Cog):
         guildSettings = await self.bot.sql_conn.fetchrow("SELECT * FROM serverList WHERE id = $1;", str(ctx.guild.id))
         await ctx.send(embed=self.bot._create_embed(ctx=ctx, description="\n".join([f"{r}: `{None if v == '' else v}`" for r, v in zip(guildSettings.keys(), guildSettings)])))
 
-    @commands.command()
-    async def motd(self, ctx):
-        await ctx.send(embed=self.bot._create_embed(ctx=ctx, title="Message of The Day", description=f"`{self.bot._settings['motd']}` :bulb:"))
+    @commands.command(aliases=["motd"])
+    async def qotd(self, ctx):
+        async with aiohttp.ClientSession() as session:
+            response = await session.get("https://quotes.rest/qod.json")
+            json = await response.json()
+            json = json["contents"]["quotes"][0]
+            await ctx.send(embed=self.bot._create_embed(ctx=ctx, title="Quote of The Day", description=f"`{json['quote']}` - `{json['author']}` :bulb:"))
 
     @commands.command()
     async def vote(self, ctx):
