@@ -65,7 +65,11 @@ class news(commands.Cog):
             soup_page = BeautifulSoup(rss, "xml")
             news_list = soup_page.findAll("item")
             news_list = [i for i in news_list if i.pubDate]
-            news_list.sort(key=lambda x: datetime.strptime(x.pubDate.text[:i[1]], "%a, %d %b %Y %H:%M:%S"))
+            try:
+                news_list.sort(key=lambda x: datetime.strptime(x.pubDate.text[:i[1]], "%a, %d %b %Y %H:%M:%S"))
+            except:
+                print(f"`{i[4]}` failed in sorting.")
+                continue
             item = news_list[-1]
             article = Story(
                 title = item.title.text,
