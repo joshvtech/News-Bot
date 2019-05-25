@@ -16,7 +16,7 @@ sources = [
     #rss url, pubDate ignore, description ignore, name, shortName, logo url
     ["http://feeds.bbci.co.uk/news/world/rss.xml",             -4, False, "BBC News",       "bbcNews",       "https://i2.feedspot.com/15793.jpg"],   #BBC News
     ["https://www.cnet.com/rss/gaming/",                       -6, False, "CNET",           "cnet",          "https://i1.feedspot.com/3708244.jpg"], #CNET
-    ["https://rss.nytimes.com/services/xml/rss/nyt/World.xml", -4, False, "New York Times", "newYorkTimes",  "https://i2.feedspot.com/4719130.jpg"], #New York Times
+    ["https://rss.nytimes.com/services/xml/rss/nyt/World.xml", -6, False, "New York Times", "newYorkTimes",  "https://i2.feedspot.com/4719130.jpg"], #New York Times
     ["http://feeds.skynews.com/feeds/rss/world.xml",           -6, False, "Sky News",       "skyNews",       "https://i3.feedspot.com/4280451.jpg"], #Sky News
     ["https://www.telegraph.co.uk/news/rss.xml",               -4, True,  "The Telegraph",  "theTelegraph",  "https://i3.feedspot.com/4880356.jpg"], #The Telegraph
     ["https://www.wired.com/feed/rss",                         -6, False, "WIRED",          "wired",         "https://i1.feedspot.com/4724360.jpg"], #WIRED
