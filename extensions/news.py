@@ -70,7 +70,11 @@ class news(commands.Cog):
             except:
                 print(f"`{i[4]}` failed in sorting.")
                 continue
-            item = news_list[-1]
+            try:
+                item = news_list[-1]
+            except:
+                print(f"`{i[4]}` failed in selecting.")
+                continue
             article = Story(
                 title = item.title.text,
                 description = item.description.text if item.description and not i[2] else "No description.",
